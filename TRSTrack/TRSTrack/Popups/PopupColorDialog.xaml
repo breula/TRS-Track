@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" 
+    xmlns:local="clr-namespace:TRSTrack.Effects"
+    x:Class="TRSTrack.Popups.PopupColorDialog"
+    BackgroundColor="#80000000">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Frame
+        Margin="50"
+        Padding="0"
+        HeightRequest="330"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        BackgroundColor="White"
+        CornerRadius="5"
+        HasShadow="True">
+        <Grid
+            ColumnSpacing="0"
+            Padding="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackLayout 
+                Grid.Row="0"
+                VerticalOptions="Start" 
+                HorizontalOptions="FillAndExpand"
+                Orientation="Vertical">
+                <Image 
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand"
+                    HeightRequest="100"
+                    Aspect="AspectFill"
+                    Source="{Binding ImageColorDialog}">
+                </Image>
+            </StackLayout>
+            <Label
+                Grid.Row="0"
+                VerticalOptions="Center"
+                HorizontalTextAlignment="Center"
+                FontFamily="BoldFont"
+                FontSize="25"
+                TextColor="#80FFFFFF"
+                Text="COR DO WAYPOINT">
+                <Label.Effects>
+                    <local:ShadowEffect Radius="1" DistanceX="1" DistanceY="1">
+                        <local:ShadowEffect.Color>
+                            <OnPlatform x:TypeArguments="Color">
+                                <On Platform="iOS" Value="Black" />
+                                <On Platform="Android" Value="Black" />
+                            </OnPlatform>
+                        </local:ShadowEffect.Color>
+                    </local:ShadowEffect>
+                </Label.Effects>
+            </Label>
+            <StackLayout 
+                Grid.Row="1"
+                Orientation="Vertical"
+                VerticalOptions="Fill" 
+                HorizontalOptions="FillAndExpand"
+                Padding="10"
+                Spacing="0">
+                <xForms:SfListView 
+                    x:Name="ListColors" 
+                    ItemsSource="{Binding AvailableColors}"
+                    SelectionBackgroundColor="Transparent"
+                    ItemSpacing="5"
+                    ItemSize="50"
+                    Margin="0,5">
+                    <xForms:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <Button 
+                                HeightRequest="50"
+                                WidthRequest="50"
+                                CornerRadius="25"
+                                BorderColor="Transparent"
+                                BorderWidth="0"
+                                BackgroundColor="{Binding ColorHexCode}"
+                                Command="{Binding Path=BindingContext.SaveChosenColorCommand, Source={x:Reference ListColors}}"
+                                CommandParameter="{Binding .}">
+                            </Button>
+                        </DataTemplate>
+                    </xForms:SfListView.ItemTemplate>
+                    <xForms:SfListView.SelectedItemTemplate>
+                        <DataTemplate>
+                            <Button 
+                                HeightRequest="50"
+                                WidthRequest="50"
+                                CornerRadius="25"
+                                BorderColor="Black"
+                                BorderWidth="3"
+                                BackgroundColor="{Binding ColorHexCode}"
+                                Command="{Binding Path=BindingContext.SaveChosenColorCommand, Source={x:Reference ListColors}}"
+                                CommandParameter="{Binding .}">
+                            </Button>
+                        </DataTemplate>
+                    </xForms:SfListView.SelectedItemTemplate>
+                    <xForms:SfListView.LayoutManager>
+                        <xForms:GridLayout SpanCount="5" />
+                    </xForms:SfListView.LayoutManager>
+                </xForms:SfListView>
+            </StackLayout>
+            <StackLayout 
+                Grid.Row="2"
+                VerticalOptions="End" 
+                HorizontalOptions="FillAndExpand">
+                <Grid
+                    RowSpacing="0"
+                    ColumnSpacing="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <BoxView Grid.Row="0" HeightRequest="1" BackgroundColor="#20000000" Margin="0"></BoxView>
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        BackgroundColor="White"
+                        Text="&#xe5cd;"
+                        FontFamily="IconFont"
+                        FontSize="30"
+                        TextColor="Black"
+                        Command="{Binding ClosePopupCommand}">
+                    </Button>
+                </Grid>
+            </StackLayout>
+        </Grid>
+    </Frame>
+</pages:PopupPage>

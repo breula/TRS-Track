@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xForms="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+             x:Class="TRSTrack.App">
+    <Application.Resources>
+        <!--Cores geradas da imagem do icone-->
+        <Color x:Key="Color1">#EB4C1E</Color>
+        <Color x:Key="Color2">#F7AC46</Color>
+        <Color x:Key="Color3">#D7DEE2</Color>
+        <Color x:Key="Color4">#2D4768</Color>
+        <Color x:Key="Color5">#F8D357</Color>
+
+        <Style x:Key="MapOverlayCard" TargetType="Frame">
+            <Setter Property="BackgroundColor" Value="#50F7AC46"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="HasShadow" Value="True"/>
+        </Style>
+        <Style x:Key="MenuRecordButtom" TargetType="Button">
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="WidthRequest" Value="50"/>
+            <Setter Property="BackgroundColor" Value="#2196F3"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderColor" Value="White"/>
+            <Setter Property="BorderWidth" Value="1"/>
+            <Setter Property="CornerRadius" Value="25"/>
+            <Setter Property="FontFamily" Value="IconFont"/>
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="TextColor" Value="White"/>
+        </Style>
+        <Style x:Key="BusieIndicator" TargetType="xForms:SfBusyIndicator">
+            <Setter Property="AnimationType" Value="Ball"></Setter>
+            <Setter Property="ViewBoxHeight" Value="100"></Setter>
+            <Setter Property="ViewBoxWidth" Value="100"></Setter>
+            <Setter Property="BackgroundColor" Value="#80000000"></Setter>
+            <Setter Property="FontFamily" Value="RegularFont"></Setter>
+            <Setter Property="TextColor"  Value="White"></Setter>
+        </Style>
+    </Application.Resources>
+</Application>

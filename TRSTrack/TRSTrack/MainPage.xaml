@@ -1,0 +1,789 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<backdrop:SfBackdropPage  
+    xmlns:backdrop="clr-namespace:Syncfusion.XForms.Backdrop;assembly=Syncfusion.SfBackdrop.XForms"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:converters="clr-namespace:TRSTrack.Converters" 
+    xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" 
+    xmlns:custom="clr-namespace:TRSTrack.Custom" 
+    xmlns:local="clr-namespace:TRSTrack.Effects" 
+    xmlns:textInputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms" 
+    xmlns:xForms2="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" 
+    xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms" 
+    xmlns:xForms1="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" 
+    xmlns:xamanimation="clr-namespace:Xamanimation;assembly=Xamanimation"
+    x:Class="TRSTrack.MainPage"
+    BackgroundColor="#F2F2F2"
+    IsBackLayerRevealed="False"
+    BackLayerRevealOption="Auto"
+    OpenIcon="menu_icon"
+    CloseIcon="menu_icon">
+    <ContentPage.Resources>
+        <converters:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
+        <xamanimation:StoryBoard
+                 x:Key="BackgroundAnimation" 
+                 Target="{x:Reference MasterGrid}">
+            <xamanimation:FadeToAnimation Opacity="0.1" Duration="200"/>
+            <xamanimation:FadeToAnimation Opacity="1"/>
+        </xamanimation:StoryBoard>
+        <xamanimation:StoryBoard
+                 x:Key="PauseRecorddAnimation" 
+                 Target="{x:Reference OverLayStatus}">
+            <xamanimation:FadeToAnimation Opacity="0.1" Duration="200"/>
+            <xamanimation:FadeToAnimation Opacity="1"/>
+        </xamanimation:StoryBoard>
+    </ContentPage.Resources>
+    <ContentPage.Triggers>
+        <EventTrigger Event="Appearing">
+            <xamanimation:BeginAnimation Animation="{StaticResource BackgroundAnimation}"/>
+        </EventTrigger>
+        <EventTrigger Event="IsVisible">
+            <xamanimation:BeginAnimation Animation="{StaticResource BackgroundAnimation}"/>
+        </EventTrigger>
+    </ContentPage.Triggers>
+
+    <backdrop:SfBackdropPage.BackLayer>
+        <backdrop:BackdropBackLayer 
+            BackgroundColor="{StaticResource Color2}" >
+            <Grid>
+                <gradient:SfGradientView>
+                    <gradient:SfGradientView.BackgroundBrush>
+                        <gradient:SfLinearGradientBrush StartPoint="0.5, 2" EndPoint="0.5, 0">
+                            <gradient:SfLinearGradientBrush.GradientStops>
+                                <gradient:SfGradientStop Color="{StaticResource Color1}" Offset="0" />
+                                <gradient:SfGradientStop Color="{StaticResource Color2}" Offset="1" />
+                            </gradient:SfLinearGradientBrush.GradientStops>
+                        </gradient:SfLinearGradientBrush>
+                    </gradient:SfGradientView.BackgroundBrush>
+                </gradient:SfGradientView>
+                <!--Menu-->
+                <Grid 
+                    RowSpacing="0"
+                    ColumnSpacing="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="40"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!--Circuitos-->
+                    <Label 
+                        Grid.Row="0" 
+                        Grid.Column="0"
+                        FontSize="20"
+                        Margin="10,0,0,0"
+                        TextColor="{StaticResource Color4}"
+                        FontFamily="AwesomeBold"
+                        Text="&#xf018;">
+                    </Label>
+                    <Label 
+                        Grid.Row="0" 
+                        Grid.Column="1"
+                        Text="CIRCUITOS"
+                        FontSize="16"
+                        FontFamily="RegularFont"
+                        TextColor="{StaticResource Color4}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateCircuitPageCommand}"></TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Frame
+                        Grid.Row="0" 
+                        Padding="0"
+                        Margin="10,0,10,10"
+                        HeightRequest="10"
+                        WidthRequest="10"
+                        CornerRadius="20"
+                        Grid.Column="2">
+                        <Label 
+                            HorizontalOptions="Center"
+                            VerticalTextAlignment="Center"
+                            FontFamily="BoldFont"
+                            FontSize="12"
+                            Text="{Binding CircuitCount}" 
+                            TextColor="{StaticResource Color4}">
+                        </Label>
+                    </Frame>
+                    
+                    <!--Iniciar Corrida-->
+                    <Label 
+                        Grid.Row="1" 
+                        Grid.Column="0"
+                        FontSize="20"
+                        Margin="10,0,0,0"
+                        TextColor="{StaticResource Color4}"
+                        FontFamily="AwesomeBold"
+                        Text="&#xf11e;">
+                    </Label>
+                    <Label 
+                        Grid.Row="1" 
+                        Grid.Column="1"
+                        Text="CORRER"
+                        FontSize="16"
+                        FontFamily="RegularFont"
+                        TextColor="{StaticResource Color4}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateRacePageCommand}"></TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    
+                    <!--Importar Circuito-->
+                    <Label 
+                        Grid.Row="2" 
+                        Grid.Column="0"
+                        FontSize="20"
+                        Margin="10,0,0,0"
+                        TextColor="{StaticResource Color4}"
+                        FontFamily="AwesomeBold"
+                        Text="&#xf019;">
+                    </Label>
+                    <Label 
+                        Grid.Row="2" 
+                        Grid.Column="1"
+                        Text="IMPORTAR CIRCUITO"
+                        FontSize="16"
+                        FontFamily="RegularFont"
+                        TextColor="{StaticResource Color4}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenPopupImportarCircuitoPageCommand}"></TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <StackLayout
+                        Grid.Row="3"
+                        Grid.ColumnSpan="3"
+                        Orientation="Vertical"
+                        Padding="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"></ColumnDefinition>
+                                <ColumnDefinition Width="50*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Image 
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                HeightRequest="50"
+                                HorizontalOptions="End"
+                                Aspect="AspectFit"
+                                Source="{Binding ImageAppIcon}">
+                            </Image>
+                            <Label
+                                Grid.Row="0" 
+                                Grid.Column="1"
+                                Grid.RowSpan="2"
+                                Margin="0,7"
+                                HorizontalOptions="Start"
+                                FontSize="18"
+                                FontFamily="TitleFont" 
+                                TextColor="{StaticResource Color4}"
+                                Text="{Binding AppName}" >
+                            </Label>
+                            <Label 
+                                Grid.Row="1" 
+                                Grid.Column="1"
+                                Grid.RowSpan="2"
+                                Margin="0,20"
+                                HorizontalOptions="Start"
+                                TextColor="{StaticResource Color4}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Version: " FontSize="12" FontFamily="RegularFont"></Span>
+                                        <Span Text="{Binding CurrentAppVersion}" FontSize="12" FontFamily="BoldFont"></Span>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+                    </StackLayout>
+                </Grid>
+            </Grid>
+        </backdrop:BackdropBackLayer>
+    </backdrop:SfBackdropPage.BackLayer>
+
+    <backdrop:SfBackdropPage.FrontLayer>
+        <backdrop:BackdropFrontLayer>
+            <Grid x:Name="MasterGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <AbsoluteLayout>
+                    <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                        <custom:CustomMap 
+                            x:Name="Map"
+                            MapType="{Binding CurrentMapType}" 
+                            HasZoomEnabled="False" 
+                            HasScrollEnabled="True">
+                        </custom:CustomMap>
+                    </StackLayout>
+                    
+                    <!--Velocimetro-->
+                    <Frame 
+                        x:Name="OverLayVelocimetro"
+                        Padding="0"
+                        CornerRadius="10"
+                        AbsoluteLayout.LayoutBounds="{Binding VelocimeterBoud}" 
+                        AbsoluteLayout.LayoutFlags="All" 
+                        Style="{StaticResource MapOverlayCard}"
+                        BackgroundColor="#F7AC46">
+                        <Grid
+                            RowSpacing="0"
+                            ColumnSpacing="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20*"></ColumnDefinition>
+                                <ColumnDefinition Width="80*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!--Velocidade-->
+                            <StackLayout
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.RowSpan="2"
+                                Spacing="0"
+                                Orientation="Vertical"
+                                BackgroundColor="red">
+                                <Label
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    FontFamily="BoldFont" 
+                                    FontSize="30"
+                                    Margin="0,15,0,0"
+                                    TextColor="White"
+                                    Text="{Binding Velocidade}">
+                                    <Label.Effects>
+                                        <local:ShadowEffect Radius="2" DistanceX="2" DistanceY="2">
+                                            <local:ShadowEffect.Color>
+                                                <OnPlatform x:TypeArguments="Color">
+                                                    <On Platform="iOS" Value="Black" />
+                                                    <On Platform="Android" Value="Black" />
+                                                </OnPlatform>
+                                            </local:ShadowEffect.Color>
+                                        </local:ShadowEffect>
+                                    </Label.Effects>
+                                </Label>
+                                <Label
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontFamily="RegularFont" 
+                                    FontSize="12"
+                                    TextColor="White"
+                                    Text="Km/h">
+                                    <Label.Effects>
+                                        <local:ShadowEffect Radius="2" DistanceX="2" DistanceY="2">
+                                            <local:ShadowEffect.Color>
+                                                <OnPlatform x:TypeArguments="Color">
+                                                    <On Platform="iOS" Value="Black" />
+                                                    <On Platform="Android" Value="Black" />
+                                                </OnPlatform>
+                                            </local:ShadowEffect.Color>
+                                        </local:ShadowEffect>
+                                    </Label.Effects>
+                                </Label>
+                            </StackLayout>
+
+                            <Grid
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                RowSpacing="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30*"></ColumnDefinition>
+                                    <ColumnDefinition Width="30*"></ColumnDefinition>
+                                    <ColumnDefinition Width="40*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                
+                                <!--Latitude-->
+                                <StackLayout
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Orientation="Vertical"
+                                    Spacing="0"
+                                    Margin="0,5">
+                                    <Label
+                                        Text="Latitude"
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="12" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont">
+                                    </Label>
+                                    <Label 
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="14" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont"
+                                        Text="{Binding LocationData.Latitude, StringFormat='{0:N6}'}">
+                                    </Label>
+                                </StackLayout>
+                                
+                                <!--Longitude-->
+                                <StackLayout
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Orientation="Vertical"
+                                    Spacing="0"
+                                    Margin="0,5">
+                                    <Label
+                                        Text="Logitude"
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="12" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont">
+                                    </Label>
+                                    <Label 
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="14" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont"
+                                        Text="{Binding LocationData.Longitude, StringFormat='{0:N6}'}">
+                                    </Label>
+                                </StackLayout>
+                                
+                                <!--Cronometro-->
+                                <StackLayout
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Orientation="Vertical"
+                                    Spacing="0"
+                                    Margin="0,5">
+                                    <Label
+                                        Text="Cronômetro"
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="12" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont">
+                                    </Label>
+                                    <Label 
+                                        FontSize="14"
+                                        FontFamily="RegularFont"
+                                        TextColor="Black" 
+                                        HorizontalOptions="CenterAndExpand"
+                                        Text="{Binding CurrentChronometer}">
+                                    </Label>
+                                </StackLayout>
+
+                                <!--Steps count-->
+                                <StackLayout
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Orientation="Vertical"
+                                    Spacing="0">
+                                    <Label
+                                        Text="Steps"
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="12" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont">
+                                    </Label>
+                                    <Label 
+                                        FontSize="14"
+                                        FontFamily="RegularFont"
+                                        TextColor="Black" 
+                                        HorizontalOptions="CenterAndExpand"
+                                        Text="{Binding PercursoCount}">
+                                    </Label>
+                                </StackLayout>
+                                
+                                <!--Waiponts count-->
+                                <StackLayout
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Orientation="Vertical"
+                                    Spacing="0">
+                                    <Label
+                                        Text="Waypoints"
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="12" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont">
+                                    </Label>
+                                    <Label 
+                                        FontSize="14"
+                                        FontFamily="RegularFont"
+                                        TextColor="Black" 
+                                        HorizontalOptions="CenterAndExpand"
+                                        Text="{Binding WayPointCount}">
+                                    </Label>
+                                </StackLayout>
+                                
+                                <!--Distancia percorrida-->
+                                <StackLayout
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Orientation="Vertical"
+                                    Spacing="0">
+                                    <Label
+                                        Text="Distância"
+                                        HorizontalOptions="CenterAndExpand"
+                                        FontSize="12" 
+                                        TextColor="Black"
+                                        FontFamily="RegularFont">
+                                    </Label>
+                                    <Label 
+                                        FontSize="14"
+                                        FontFamily="RegularFont"
+                                        TextColor="Black" 
+                                        HorizontalOptions="CenterAndExpand"
+                                        Text="{Binding DistanciaPercorrida, StringFormat='{0:N0} m'}">
+                                    </Label>
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Frame>
+
+                    <!--Status {Binding IsRecordPaused}-->
+                    <Frame 
+                        x:Name="OverLayStatus"
+                        Padding="0"
+                        CornerRadius="10"
+                        AbsoluteLayout.LayoutBounds="{Binding VelocimeterBoud}" 
+                        AbsoluteLayout.LayoutFlags="All" 
+                        IsVisible="{Binding IsRecordPaused}"
+                        Style="{StaticResource MapOverlayCard}"
+                        BackgroundColor="#90000000">
+                        <StackLayout
+                            Padding="5"
+                            Orientation="Vertical">
+                            <Label
+                                Text="&#xe036;"
+                                FontFamily="IconFont"
+                                FontSize="50"
+                                TextColor="White"
+                                HorizontalTextAlignment="Center">
+                                <Label.Effects>
+                                    <local:ShadowEffect 
+                                        Radius="1" 
+                                        DistanceX="1" 
+                                        DistanceY="1">
+                                        <local:ShadowEffect.Color>
+                                            <OnPlatform x:TypeArguments="Color">
+                                                <On Platform="iOS" Value="Black" />
+                                                <On Platform="Android" Value="Black" />
+                                            </OnPlatform>
+                                        </local:ShadowEffect.Color>
+                                    </local:ShadowEffect>
+                                </Label.Effects>
+                            </Label>
+                            <Label
+                                Text="GRAVAÇÃO PAUSADA"
+                                FontFamily="IconFont"
+                                FontSize="10"
+                                CharacterSpacing="2"
+                                TextColor="White"
+                                HorizontalTextAlignment="Center">
+                                <Label.Effects>
+                                    <local:ShadowEffect 
+                                        Radius="1" 
+                                        DistanceX="1" 
+                                        DistanceY="1">
+                                        <local:ShadowEffect.Color>
+                                            <OnPlatform x:TypeArguments="Color">
+                                                <On Platform="iOS" Value="Black" />
+                                                <On Platform="Android" Value="Black" />
+                                            </OnPlatform>
+                                        </local:ShadowEffect.Color>
+                                    </local:ShadowEffect>
+                                </Label.Effects>
+                            </Label>
+                        </StackLayout>
+                    </Frame>
+                    
+                    <!--Lista de waypoints-->
+                    <Frame
+                        x:Name="OverLayWayPoints"
+                        CornerRadius="10"
+                        AbsoluteLayout.LayoutBounds="1, 0.445, 1, 0.71" 
+                        AbsoluteLayout.LayoutFlags="All" 
+                        IsVisible="{Binding ScreenOptions.ShowWayPointsList}"
+                        Style="{StaticResource MapOverlayCard}">
+                        <StackLayout>
+                            <xForms2:SfListView 
+                                x:Name="ListWayPoints" 
+                                ItemsSource="{Binding WayPoints}"
+                                AutoFitMode="Height"
+                                SelectionBackgroundColor="Transparent"
+                                Margin="0,5">
+                                <xForms2:SfListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <cards:SfCardView 
+                                            IndicatorColor="{Binding Cor}" 
+                                            HeightRequest="100"
+                                            Margin="5,0,5,5"
+                                            BorderColor="#102196F3"
+                                            BorderWidth="1"
+                                            IndicatorThickness="5"
+                                            IndicatorPosition="Left">
+                                            <Grid
+                                                RowSpacing="0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"></RowDefinition>
+                                                    <RowDefinition Height="Auto"></RowDefinition>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="35"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    <ColumnDefinition Width="35"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <StackLayout
+                                                    Grid.Row="0"
+                                                    Grid.Column="0"
+                                                    Grid.RowSpan="3"
+                                                    Orientation="Vertical"
+                                                    Spacing="0"
+                                                    VerticalOptions="FillAndExpand"
+                                                    HorizontalOptions="FillAndExpand">
+                                                    <Label 
+                                                        HorizontalOptions="Center"
+                                                        Margin="0,20,0,0"
+                                                        FontSize="35"
+                                                        TextColor="{Binding Cor}"
+                                                        FontFamily="IconFont"
+                                                        Text="&#xe55f;">
+                                                    </Label>
+                                                    <Label
+                                                        HorizontalOptions="Center"
+                                                        Margin="0,0,0,25"
+                                                        FontSize="12"
+                                                        FontFamily="BoldFont"
+                                                        TextColor="Black"
+                                                        Text="{Binding Id}">
+                                                    </Label>
+                                                </StackLayout>
+                                                <StackLayout 
+                                                    Grid.Row="0"
+                                                    Grid.Column="1"
+                                                    Orientation="Horizontal"
+                                                    HorizontalOptions="CenterAndExpand"
+                                                    Padding="0,10,0,0">
+                                                    <Label>
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="Latitude: " FontFamily="BoldFont" TextColor="{StaticResource Color4}" FontSize="12"/>
+                                                                <Span Text="{Binding Latitude, StringFormat='{0:N4}'}" FontFamily="BoldFont" TextColor="Teal" FontSize="12"/>
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                    <Label>
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="Longitude: " FontFamily="BoldFont" TextColor="{StaticResource Color4}" FontSize="12"/>
+                                                                <Span Text="{Binding Longitude, StringFormat='{0:N4}'}" FontFamily="BoldFont" TextColor="Teal" FontSize="12"/>
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                </StackLayout>
+                                                <textInputLayout:SfTextInputLayout
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    FocusedColor="Black"
+                                                    ContainerType="Outlined"
+                                                    OutlineCornerRadius="5"
+                                                    Hint="Nome do waypoint">
+                                                    <Entry 
+                                                        HeightRequest="50" 
+                                                        TextColor="Black" 
+                                                        FontFamily="RegularFont"
+                                                        Text="{Binding Nome}">
+                                                    </Entry>
+                                                    <textInputLayout:SfTextInputLayout.HintLabelStyle>
+                                                        <textInputLayout:LabelStyle FontSize="16">
+                                                            <textInputLayout:LabelStyle.FontFamily>
+                                                                <OnPlatform x:TypeArguments="x:String" iOS="RegularFont" Android="RegularFont" />
+                                                            </textInputLayout:LabelStyle.FontFamily>
+                                                        </textInputLayout:LabelStyle>
+                                                    </textInputLayout:SfTextInputLayout.HintLabelStyle>
+                                                </textInputLayout:SfTextInputLayout>
+                                                <StackLayout
+                                                    Grid.Row="0"
+                                                    Grid.Column="2"
+                                                    Grid.RowSpan="3"
+                                                    Orientation="Vertical"
+                                                    Spacing="0"
+                                                    VerticalOptions="FillAndExpand"
+                                                    HorizontalOptions="FillAndExpand">
+                                                    <Button
+                                                        VerticalOptions="Fill"
+                                                        HorizontalOptions="Fill"
+                                                        BackgroundColor="White"
+                                                        CornerRadius="0"
+                                                        Text="&#xe872;"
+                                                        TextColor="{StaticResource Color1}"
+                                                        FontFamily="IconFont"
+                                                        FontSize="30"
+                                                        Padding="0"
+                                                        Command="{Binding Path=BindingContext.ExcluirWayPointCommand, Source={x:Reference ListWayPoints}}"
+                                                        CommandParameter="{Binding .}">
+                                                    </Button>
+                                                    <Button
+                                                        VerticalOptions="Fill"
+                                                        HorizontalOptions="Fill"
+                                                        BackgroundColor="White"
+                                                        CornerRadius="0"
+                                                        Text="&#xe3b7;"
+                                                        TextColor="MidnightBlue"
+                                                        FontFamily="IconFont"
+                                                        FontSize="30"
+                                                        Padding="0"
+                                                        Command="{Binding Path=BindingContext.OpenColorPickerDialogCommand, Source={x:Reference ListWayPoints}}"
+                                                        CommandParameter="{Binding .}">
+                                                    </Button>
+                                                </StackLayout>
+                                            </Grid>
+                                        </cards:SfCardView>
+                                    </DataTemplate>
+                                </xForms2:SfListView.ItemTemplate>
+                            </xForms2:SfListView>
+                        </StackLayout>
+                    </Frame>
+                    
+                    <!--Record buttoms-->
+                    <Frame
+                        x:Name="OverLayMenuBotoes"
+                        CornerRadius="10"
+                        AbsoluteLayout.LayoutBounds="{Binding RecordButtonsBoud}" 
+                        AbsoluteLayout.LayoutFlags="All"
+                        IsVisible="{Binding ScreenOptions.ShowMenuBotoes}"
+                        Style="{StaticResource MapOverlayCard}"
+                        BackgroundColor="Transparent">
+                        <StackLayout
+                            Orientation="Horizontal"
+                            HorizontalOptions="CenterAndExpand"
+                            Spacing="10"
+                            Padding="0">
+                            <Button
+                                Text="&#xe037;"
+                                Style="{StaticResource MenuRecordButtom}"
+                                Command="{Binding StartRecordCommand}"
+                                IsEnabled="{Binding KeepTrakingPosition, Converter={StaticResource NegateBooleanConverter}}">
+                            </Button>
+                            <Button
+                                Text="&#xe047;"
+                                Style="{StaticResource MenuRecordButtom}"
+                                Command="{Binding StopRecordCommand}"
+                                IsEnabled="{Binding KeepTrakingPosition}">
+                            </Button>
+                            <Button
+                                Text="&#xef3a;"
+                                Command="{Binding SaveWayPointCommand}"
+                                Style="{StaticResource MenuRecordButtom}"
+                                IsEnabled="{Binding KeepTrakingPosition}">
+                            </Button>
+                            <Button
+                                BackgroundColor="#ED1C24"
+                                Text="&#xe0b8;"
+                                Style="{StaticResource MenuRecordButtom}"
+                                Command="{Binding ResetRecordCommand}"
+                                IsEnabled="{Binding CanReset}">
+                            </Button>
+                            <Button
+                                BackgroundColor="#0DC143"
+                                Text="&#xef3b;"
+                                Command="{Binding OpenSaveCircuitDialogCommand}"
+                                Style="{StaticResource MenuRecordButtom}"
+                                IsEnabled="{Binding CanSaveCircuit}">
+                            </Button>
+                        </StackLayout>
+                    </Frame>
+                </AbsoluteLayout>
+
+                <xForms1:SfRadialMenu 
+                    x:Name="RadialMenu" 
+                    CenterButtonText="&#xf0c9;"
+                    CenterButtonFontSize="25"
+                    CenterButtonFontFamily="AwesomeBold"
+                    CenterButtonRadius="30"
+                    SelectionColor="DimGray"
+                    SeparatorThickness="1"
+                    DragEnd="RadialMenu_OnDragEnd"
+                    SeparatorColor="Gray"
+                    RimRadius="80" 
+                    RimColor="#70ffffff"
+                    Point="{Binding RadialMenuPointPosition}">
+                    <xForms1:SfRadialMenu.Items>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xf3fd;"
+                            FontSize="20"
+                            FontFamily="AwesomeBold"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding ShowHideVelocimeterCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xf1c1;"
+                            FontSize="20"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            FontFamily="IconFont"
+                            Command="{Binding ShowHideMenuBotoesCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xe241;"
+                            FontSize="20"
+                            FontFamily="IconFont"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding ShowWayPointsListCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xe8ff;"
+                            FontSize="20"
+                            FontFamily="IconFont"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding IncreaseMapZoomCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xe900;"
+                            FontSize="20"
+                            FontFamily="IconFont"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding DecreaseMapZoomCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xf57c;"
+                            FontSize="20"
+                            FontFamily="AwesomeBold"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding ChangeMapTypeCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xe898;"
+                            FontSize="20"
+                            FontFamily="IconFont"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding OpenUnlockPopupOptionsCommand}">
+                        </xForms1:SfRadialMenuItem>
+                        <xForms1:SfRadialMenuItem 
+                            Text="&#xe429;"
+                            FontSize="20"
+                            FontFamily="IconFont"
+                            ItemWidth="25"
+                            ItemHeight="25"
+                            Command="{Binding AjustRecordParamsCommand}">
+                        </xForms1:SfRadialMenuItem>
+                    </xForms1:SfRadialMenu.Items>
+                </xForms1:SfRadialMenu>
+            </Grid>
+        </backdrop:BackdropFrontLayer>
+    </backdrop:SfBackdropPage.FrontLayer>
+
+</backdrop:SfBackdropPage>

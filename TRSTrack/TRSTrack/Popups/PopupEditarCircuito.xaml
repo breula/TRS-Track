@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage  
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" 
+    xmlns:textInputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms" 
+    xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" 
+    xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+    x:Class="TRSTrack.Popups.PopupEditarCircuito"
+    BackgroundColor="#80000000">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    
+    <Frame
+        Margin="50"
+        Padding="0"
+        HeightRequest="350"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        BackgroundColor="White"
+        CornerRadius="5"
+        HasShadow="True">
+        <Grid
+            ColumnSpacing="0"
+            Padding="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackLayout
+                Grid.Row="0"
+                Padding="20,10,20,0"
+                VerticalOptions="Start" 
+                HorizontalOptions="FillAndExpand"
+                Spacing="0"
+                Orientation="Vertical">
+                <textInputLayout:SfTextInputLayout
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FocusedColor="Black"
+                    ContainerType="Outlined"
+                    OutlineCornerRadius="5"
+                    Hint="Nome do Circuito">
+                    <Entry 
+                        TextColor="Black" 
+                        FontFamily="RegularFont"
+                        Text="{Binding Circuito.Nome, Mode=TwoWay}">
+                    </Entry>
+                    <textInputLayout:SfTextInputLayout.HintLabelStyle>
+                        <textInputLayout:LabelStyle FontSize="16">
+                            <textInputLayout:LabelStyle.FontFamily>
+                                <OnPlatform x:TypeArguments="x:String" iOS="RegularFont" Android="RegularFont" />
+                            </textInputLayout:LabelStyle.FontFamily>
+                        </textInputLayout:LabelStyle>
+                    </textInputLayout:SfTextInputLayout.HintLabelStyle>
+                </textInputLayout:SfTextInputLayout>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Distância: " TextColor="{StaticResource Color4}" FontFamily="RegularFont" FontSize="14"></Span>
+                            <Span Text="{Binding Circuito.Distancia, StringFormat='{0:N0}'}" TextColor="{StaticResource Color4}" FontFamily="BoldFont" FontSize="14"></Span>
+                            <Span Text=" metros." TextColor="{StaticResource Color4}" FontFamily="RegularFont" FontSize="14"></Span>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </StackLayout>
+            <StackLayout 
+                Grid.Row="1"
+                Orientation="Vertical"
+                VerticalOptions="Fill" 
+                HorizontalOptions="FillAndExpand"
+                Padding="10"
+                Spacing="0">
+                <xForms:SfListView 
+                    x:Name="ListWayPoints" 
+                    ItemsSource="{Binding WayPoints}"
+                    AutoFitMode="Height"
+                    SelectionBackgroundColor="Transparent"
+                    Margin="0,5">
+                    <xForms:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <cards:SfCardView 
+                                IndicatorColor="{Binding Cor}" 
+                                HeightRequest="100"
+                                Margin="5,0,5,5"
+                                BorderColor="#102196F3"
+                                BorderWidth="1"
+                                IndicatorThickness="5"
+                                IndicatorPosition="Left">
+                                <Grid
+                                    RowSpacing="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="35"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="35"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.RowSpan="3"
+                                        Orientation="Vertical"
+                                        Spacing="0"
+                                        VerticalOptions="FillAndExpand"
+                                        HorizontalOptions="FillAndExpand">
+                                        <Label 
+                                            HorizontalOptions="Center"
+                                            Margin="0,20,0,0"
+                                            FontSize="35"
+                                            TextColor="{Binding Cor}"
+                                            FontFamily="IconFont"
+                                            Text="&#xe55f;">
+                                        </Label>
+                                        <Label
+                                            HorizontalOptions="Center"
+                                            Margin="0,0,0,25"
+                                            FontSize="12"
+                                            FontFamily="BoldFont"
+                                            TextColor="Black"
+                                            Text="{Binding Id}">
+                                        </Label>
+                                    </StackLayout>
+                                    <StackLayout 
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        HorizontalOptions="CenterAndExpand"
+                                        Padding="0,10,0,0">
+                                        <Label>
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Latitude: " FontFamily="BoldFont" TextColor="{StaticResource Color4}" FontSize="12"/>
+                                                    <Span Text="{Binding Latitude, StringFormat='{0:N4}'}" FontFamily="BoldFont" TextColor="Teal" FontSize="12"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                        <Label>
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Longitude: " FontFamily="BoldFont" TextColor="{StaticResource Color4}" FontSize="12"/>
+                                                    <Span Text="{Binding Longitude, StringFormat='{0:N4}'}" FontFamily="BoldFont" TextColor="Teal" FontSize="12"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
+                                    <textInputLayout:SfTextInputLayout
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FocusedColor="Black"
+                                        ContainerType="Outlined"
+                                        OutlineCornerRadius="5"
+                                        Hint="Nome do waypoint">
+                                        <Entry 
+                                            HeightRequest="50" 
+                                            TextColor="Black" 
+                                            FontFamily="RegularFont"
+                                            Text="{Binding Nome}">
+                                        </Entry>
+                                        <textInputLayout:SfTextInputLayout.HintLabelStyle>
+                                            <textInputLayout:LabelStyle FontSize="16">
+                                                <textInputLayout:LabelStyle.FontFamily>
+                                                    <OnPlatform x:TypeArguments="x:String" iOS="RegularFont" Android="RegularFont" />
+                                                </textInputLayout:LabelStyle.FontFamily>
+                                            </textInputLayout:LabelStyle>
+                                        </textInputLayout:SfTextInputLayout.HintLabelStyle>
+                                    </textInputLayout:SfTextInputLayout>
+                                    <StackLayout
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Grid.RowSpan="3"
+                                        Orientation="Vertical"
+                                        Spacing="0"
+                                        VerticalOptions="FillAndExpand"
+                                        HorizontalOptions="FillAndExpand">
+                                        <Button
+                                            VerticalOptions="Fill"
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="White"
+                                            CornerRadius="0"
+                                            Text="&#xe872;"
+                                            TextColor="{StaticResource Color1}"
+                                            FontFamily="IconFont"
+                                            FontSize="30"
+                                            Padding="0"
+                                            Command="{Binding Path=BindingContext.ExcluirWayPointCommand, Source={x:Reference ListWayPoints}}"
+                                            CommandParameter="{Binding .}">
+                                        </Button>
+                                        <Button
+                                            VerticalOptions="Fill"
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="White"
+                                            CornerRadius="0"
+                                            Text="&#xe3b7;"
+                                            TextColor="MidnightBlue"
+                                            FontFamily="IconFont"
+                                            FontSize="30"
+                                            Padding="0"
+                                            Command="{Binding Path=BindingContext.OpenColorPickerDialogCommand, Source={x:Reference ListWayPoints}}"
+                                            CommandParameter="{Binding .}">
+                                        </Button>
+                                    </StackLayout>
+                                </Grid>
+                            </cards:SfCardView>
+                        </DataTemplate>
+                    </xForms:SfListView.ItemTemplate>
+                </xForms:SfListView>
+            </StackLayout>
+            <StackLayout
+                Grid.Row="2"
+                VerticalOptions="End" 
+                HorizontalOptions="FillAndExpand">
+                <Grid
+                    RowSpacing="0"
+                    ColumnSpacing="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <BoxView Grid.Row="0" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="#20000000" Margin="0"></BoxView>
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        BackgroundColor="White"
+                        Text="&#xe5cd;"
+                        FontFamily="IconFont"
+                        FontSize="30"
+                        TextColor="Black"
+                        Command="{Binding CloseSaveCircuitDialogCommand}">
+                    </Button>
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        BackgroundColor="White"
+                        Text="&#xe161;"
+                        FontFamily="IconFont"
+                        FontSize="30"
+                        TextColor="Black"
+                        Command="{Binding SaveCircuitCommand}">
+                    </Button>
+                </Grid>
+            </StackLayout>
+        </Grid>
+    </Frame>
+</pages:PopupPage>

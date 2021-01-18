@@ -1,0 +1,11 @@
+.vs
+*.dll
+*.apk
+App/App.Android/bin/*
+App/App.Android/obj/*
+App/App.iOS/bin/*
+App/App.iOS/obj/*
+App/App/bin/*
+App/App/obj/*
+Entities/bin/*
+Entities/obj/*

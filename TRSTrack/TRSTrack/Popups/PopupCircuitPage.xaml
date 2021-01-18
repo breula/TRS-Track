@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" 
+    xmlns:local="clr-namespace:TRSTrack.Effects" 
+    xmlns:xforms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" 
+    xmlns:xForms="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+    x:Class="TRSTrack.Popups.PopupCircuitPage"
+    BackgroundColor="#80000000">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Right"
+            PositionOut="Right"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Frame
+                Padding="0"
+                BackgroundColor="{StaticResource Color3}">
+                <Grid
+                    ColumnSpacing="0"
+                    Padding="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackLayout 
+                        Grid.Row="0"
+                        VerticalOptions="Start" 
+                        HorizontalOptions="FillAndExpand"
+                        Orientation="Vertical">
+                        <Image 
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand"
+                            HeightRequest="150"
+                            Aspect="AspectFill"
+                            Source="{Binding ImageSaveCircuit}">
+                        </Image>
+                    </StackLayout>
+                    <Label
+                        Grid.Row="0"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        FontFamily="BoldFont"
+                        FontSize="50"
+                        TextColor="#80FFFFFF"
+                        Text="CIRCUITOS">
+                        <Label.Effects>
+                            <local:ShadowEffect Radius="1" DistanceX="1" DistanceY="1">
+                                <local:ShadowEffect.Color>
+                                    <OnPlatform x:TypeArguments="Color">
+                                        <On Platform="iOS" Value="Black" />
+                                        <On Platform="Android" Value="Black" />
+                                    </OnPlatform>
+                                </local:ShadowEffect.Color>
+                            </local:ShadowEffect>
+                        </Label.Effects>
+                    </Label>
+                    <Button 
+                        Grid.Row="0"
+                        VerticalOptions="End"
+                        HorizontalOptions="End"
+                        BackgroundColor="Transparent"
+                        FontFamily="IconFont"
+                        FontSize="30"
+                        HeightRequest="50"
+                        Padding="0"
+                        Margin="0"
+                        Text="&#xe92e;"
+                        TextColor="Red"
+                        Command="{Binding ExcluirTodosCircuitoCommand}">
+                    </Button>
+                    
+                    <StackLayout 
+                        Grid.Row="1"
+                        VerticalOptions="Fill" 
+                        Padding="10"
+                        Spacing="0"
+                        HorizontalOptions="FillAndExpand"
+                        Orientation="Vertical">
+                        <xforms:SfListView
+                            x:Name="ListCircuitos" 
+                            ItemsSource="{Binding Circuitos}"
+                            AutoFitMode="Height"
+                            SelectionBackgroundColor="Transparent">
+                            <xforms:SfListView.LayoutManager>
+                                <xforms:GridLayout SpanCount="1" />
+                            </xforms:SfListView.LayoutManager>
+                            <xforms:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        BackgroundColor="White"
+                                        Padding="0"
+                                        Margin="0,0,0,10"
+                                        HeightRequest="90"
+                                        CornerRadius="8"
+                                        HorizontalOptions="FillAndExpand">
+                                        <Grid
+                                            ColumnSpacing="0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="30"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="80*"></ColumnDefinition>
+                                                <ColumnDefinition Width="20*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label 
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                FontFamily="BoldFont"
+                                                TextColor="{StaticResource Color4}"
+                                                FontSize="18"
+                                                Margin="0,10,0,0"
+                                                HorizontalTextAlignment="Center"
+                                                HorizontalOptions="CenterAndExpand"
+                                                Text="{Binding Nome}">
+                                            </Label>
+                                            <StackLayout
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Spacing="0"
+                                                HorizontalOptions="CenterAndExpand"
+                                                Orientation="Horizontal">
+                                                <StackLayout
+                                                    Orientation="Vertical"
+                                                    Spacing="0"
+                                                    Padding="15,0,0,0">
+                                                    <Label Text="&#xf547; " FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                                                    <Label>
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="{Binding Distancia, StringFormat='{0:N0}'}" FontFamily="BoldFont" FontSize="10" TextColor="{StaticResource Color4}"></Span>
+                                                                <Span Text=" m" FontFamily="LightFont" FontSize="10" TextColor="{StaticResource Color4}"></Span>
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                </StackLayout>
+                                                <StackLayout
+                                                    Orientation="Vertical"
+                                                    Spacing="0"
+                                                    Padding="15,0,0,0">
+                                                    <Label Text="&#xf5a0;" FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                                                    <Label>
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="{Binding Cidade}" FontFamily="BoldFont" FontSize="10" TextColor="{StaticResource Color4}"></Span>
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                </StackLayout>
+                                                <StackLayout
+                                                    Orientation="Vertical"
+                                                    Spacing="0"
+                                                    Padding="15,0,0,0">
+                                                    <Label Text="&#xf073;" FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                                                    <Label>
+                                                        <Label.FormattedText>
+                                                            <FormattedString>
+                                                                <Span Text="{Binding Data, StringFormat='{0:dd/MM/yyyy HH:mm}'}" FontFamily="BoldFont" FontSize="10" TextColor="{StaticResource Color4}"></Span>
+                                                            </FormattedString>
+                                                        </Label.FormattedText>
+                                                    </Label>
+                                                </StackLayout>
+                                            </StackLayout>
+
+                                            <Grid
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Grid.RowSpan="3"
+                                                ColumnSpacing="0"
+                                                RowSpacing="0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"></RowDefinition>
+                                                    <RowDefinition Height="Auto"></RowDefinition>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <BoxView 
+                                                    Grid.Row="0"
+                                                    Grid.Column="0"
+                                                    Grid.RowSpan="3"
+                                                    WidthRequest="1" 
+                                                    BackgroundColor="#10000000" 
+                                                    VerticalOptions="FillAndExpand" 
+                                                    HorizontalOptions="FillAndExpand">
+                                                </BoxView>
+                                                <Button 
+                                                    Grid.Row="0"
+                                                    Grid.Column="1"
+                                                    VerticalOptions="Fill"
+                                                    HorizontalOptions="Fill"
+                                                    BackgroundColor="White"
+                                                    CornerRadius="0"
+                                                    FontFamily="IconFont"
+                                                    FontSize="20"
+                                                    HeightRequest="30"
+                                                    Padding="0"
+                                                    Text="&#xe92e;"
+                                                    TextColor="{StaticResource Color4}"
+                                                    Command="{Binding Path=BindingContext.ExcluirCircuitoCommand, Source={x:Reference ListCircuitos}}"
+                                                    CommandParameter="{Binding .}">
+                                                </Button>
+                                                <Button 
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    VerticalOptions="Fill"
+                                                    HorizontalOptions="Fill"
+                                                    BackgroundColor="White"
+                                                    CornerRadius="0"
+                                                    FontFamily="IconFont"
+                                                    FontSize="20"
+                                                    HeightRequest="30"
+                                                    Padding="0"
+                                                    Text="&#xef4d;"
+                                                    TextColor="{StaticResource Color4}"
+                                                    Command="{Binding Path=BindingContext.EditarCircuitoCommand, Source={x:Reference ListCircuitos}}"
+                                                    CommandParameter="{Binding .}">
+                                                </Button>
+                                                <Button 
+                                                    Grid.Row="2"
+                                                    Grid.Column="1"
+                                                    VerticalOptions="Fill"
+                                                    HorizontalOptions="Fill"
+                                                    BackgroundColor="White"
+                                                    CornerRadius="0"
+                                                    FontFamily="IconFont"
+                                                    FontSize="20"
+                                                    HeightRequest="30"
+                                                    Padding="0"
+                                                    Text="&#xe80d;"
+                                                    TextColor="{StaticResource Color4}"
+                                                    Command="{Binding Path=BindingContext.ShareCircuitoCommand, Source={x:Reference ListCircuitos}}"
+                                                    CommandParameter="{Binding .}">
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </xforms:SfListView.ItemTemplate>
+                        </xforms:SfListView>
+                    </StackLayout>
+                </Grid>
+                <Frame.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Right" Command="{Binding SwipeCommand}"></SwipeGestureRecognizer>
+                </Frame.GestureRecognizers>
+            </Frame>
+
+            <xForms:SfBusyIndicator 
+                x:Name="Busyindicator"
+                IsBusy="{Binding IsBusy}"
+                Title="{Binding BusieMessage}"
+                Style="{StaticResource BusieIndicator}">
+            </xForms:SfBusyIndicator>
+            
+            <Grid.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Right" Command="{Binding SwipeCommand}"></SwipeGestureRecognizer>
+            </Grid.GestureRecognizers>
+            
+        </Grid>
+    </ContentPage.Content>
+</pages:PopupPage>
+

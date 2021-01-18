@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" 
+    xmlns:local="clr-namespace:TRSTrack.Effects" 
+    xmlns:xForms="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
+    x:Class="TRSTrack.Popups.PopupImportarCircuitoPage"
+    BackgroundColor="#80000000">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Frame
+            Margin="50"
+            Padding="0"
+            HeightRequest="330"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            BackgroundColor="White"
+            CornerRadius="5"
+            HasShadow="True">
+            <Grid
+            ColumnSpacing="0"
+            Padding="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackLayout 
+                    Grid.Row="0"
+                    VerticalOptions="Start" 
+                    HorizontalOptions="FillAndExpand"
+                    Orientation="Vertical">
+                    <Image 
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        HeightRequest="100"
+                        Aspect="AspectFill"
+                        Source="{Binding ImageSaveCircuit}">
+                    </Image>
+                </StackLayout>
+                <Label
+                    Grid.Row="0"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    FontFamily="BoldFont"
+                    FontSize="25"
+                    TextColor="#80FFFFFF"
+                    Text="IMPORTAR CIRCUITO">
+                    <Label.Effects>
+                        <local:ShadowEffect Radius="1" DistanceX="1" DistanceY="1">
+                            <local:ShadowEffect.Color>
+                                <OnPlatform x:TypeArguments="Color">
+                                    <On Platform="iOS" Value="Black" />
+                                    <On Platform="Android" Value="Black" />
+                                </OnPlatform>
+                            </local:ShadowEffect.Color>
+                        </local:ShadowEffect>
+                    </Label.Effects>
+                </Label>
+                <StackLayout 
+                    Grid.Row="1"
+                    Orientation="Vertical"
+                    VerticalOptions="Fill" 
+                    HorizontalOptions="FillAndExpand"
+                    Padding="10"
+                    Spacing="0">
+                    <Button
+                        HorizontalOptions="Center"
+                        BackgroundColor="White"
+                        FontSize="30"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        CornerRadius="30"
+                        FontFamily="IconFont"
+                        Text="&#xe2c8;"
+                        BorderWidth="2"
+                        BorderColor="{StaticResource Color4}"
+                        TextColor="{StaticResource Color4}"
+                        Command="{Binding AbrirArquivoCirCommand}">
+                    </Button>
+                    <StackLayout
+                        Orientation="Horizontal"
+                        Spacing="0"
+                        Padding="20,10,0,0">
+                        <Label Text="&#xf018; " FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" Padding="0,3"></Label>
+                        <Label 
+                        FontFamily="BoldFont" 
+                        FontSize="14"
+                        TextColor="{StaticResource Color4}"
+                        Text="{Binding CircuitoLido.Nome}">
+                        </Label>
+                    </StackLayout>
+                    <StackLayout
+                        Orientation="Horizontal"
+                        Spacing="0"
+                        Padding="20,5,0,0">
+                        <Label Text="&#xf547; " FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" Padding="0,3"></Label>
+                        <Label
+                        TextColor="{StaticResource Color4}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding CircuitoLido.Distancia, StringFormat='{0:N0}'}" FontFamily="BoldFont" FontSize="14" ></Span>
+                                    <Span Text=" m" FontFamily="LightFont" FontSize="14"></Span>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                    <StackLayout
+                        Orientation="Horizontal"
+                        Spacing="0"
+                        Padding="20,5,0,0">
+                        <Label Text="&#xf5a0; " FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}"></Label>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding CircuitoLido.Cidade}" FontFamily="BoldFont" FontSize="14" TextColor="{StaticResource Color4}"></Span>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                </StackLayout>
+                <StackLayout 
+                    Grid.Row="2"
+                    VerticalOptions="End" 
+                    HorizontalOptions="FillAndExpand">
+                    <Grid
+                    RowSpacing="0"
+                    ColumnSpacing="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"></ColumnDefinition>
+                            <ColumnDefinition Width="50*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <BoxView Grid.Row="0" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="#20000000" Margin="0"></BoxView>
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand"
+                            BackgroundColor="White"
+                            Text="&#xe5cd;"
+                            FontFamily="IconFont"
+                            FontSize="30"
+                            TextColor="Black"
+                            Command="{Binding ClosePopupCommand}">
+                        </Button>
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand"
+                            BackgroundColor="White"
+                            Text="&#xf019;"
+                            FontFamily="AwesomeBold"
+                            FontSize="23"
+                            TextColor="Black"
+                            Command="{Binding ImportarCommand}">
+                        </Button>
+                    </Grid>
+                </StackLayout>
+            </Grid>
+        </Frame>
+
+        <xForms:SfBusyIndicator 
+            x:Name="Busyindicator"
+            IsBusy="{Binding IsBusy}"
+            Title="{Binding BusieMessage}"
+            Style="{StaticResource BusieIndicator}">
+        </xForms:SfBusyIndicator>
+    </Grid>
+
+</pages:PopupPage>

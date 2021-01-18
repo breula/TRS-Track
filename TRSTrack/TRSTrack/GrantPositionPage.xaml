@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" 
+             xmlns:xamanimation="clr-namespace:Xamanimation;assembly=Xamanimation"
+             x:Class="TRSTrack.GrantPositionPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xamanimation:StoryBoard
+                 x:Key="BackgroundAnimation" 
+                 Target="{x:Reference MasterGrid}">
+                <xamanimation:FadeToAnimation Opacity="0.1" Duration="200"/>
+                <xamanimation:FadeToAnimation Opacity="1"/>
+            </xamanimation:StoryBoard>
+            <xamanimation:FadeToAnimation 
+                x:Key="ImageAnimation"    
+                Delay="3000"
+                Duration="500"
+                Opacity="1"
+                Target="{x:Reference ImageComponent}">
+            </xamanimation:FadeToAnimation>
+            <xamanimation:FadeInAnimation 
+                x:Key="ButtomAnimation" 
+                Delay="3000"
+                Duration="500"
+                Direction="Up"
+                Target="{x:Reference ButtomComponent}">
+            </xamanimation:FadeInAnimation>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Triggers>
+        <EventTrigger Event="Appearing">
+            <xamanimation:BeginAnimation Animation="{StaticResource BackgroundAnimation}"/>
+            <xamanimation:BeginAnimation Animation="{StaticResource ImageAnimation}"/>
+            <xamanimation:BeginAnimation Animation="{StaticResource ButtomAnimation}"/>
+        </EventTrigger>
+    </ContentPage.Triggers>
+    <ContentPage.Content>
+        <Grid
+            x:Name="MasterGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <gradient:SfGradientView>
+                <gradient:SfGradientView.BackgroundBrush>
+                    <gradient:SfLinearGradientBrush>
+                        <gradient:SfLinearGradientBrush.GradientStops>
+                            <gradient:SfGradientStop Color="{StaticResource Color1}" Offset="0.0" />
+                            <gradient:SfGradientStop Color="{StaticResource Color2}" Offset="1.0" />
+                        </gradient:SfLinearGradientBrush.GradientStops>
+                    </gradient:SfLinearGradientBrush>
+                </gradient:SfGradientView.BackgroundBrush>
+            </gradient:SfGradientView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="400"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackLayout
+                    x:Name="ImageComponent"
+                    Opacity="0">
+                    <Image 
+                        Grid.Row="0"
+                        Source="position" 
+                        IsAnimationPlaying="true">
+                    </Image>
+                </StackLayout>
+
+                <StackLayout
+                    x:Name="ButtomComponent"
+                    Opacity="0"
+                    Grid.Row="1"
+                    Spacing="0"
+                    Padding="20"
+                    Orientation="Vertical">
+                    <Label
+                        FontFamily="BoldFont"
+                        Text="GPS"
+                        FontSize="50"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{StaticResource Color4}">
+                    </Label>
+                    <Label
+                        HorizontalTextAlignment="Center"
+                        TextColor="{StaticResource Color4}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Necessário que " FontFamily="LightFont" FontSize="14"></Span>
+                                <Span Text="{Binding AppName}" FontFamily="TitleFont" FontSize="14"></Span>
+                                <Span Text=" tenha acesso à sua posição geográfica" FontFamily="LightFont" FontSize="14"></Span>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Button
+                        Text="LIBERAR"
+                        CharacterSpacing="2"
+                        CornerRadius="10"
+                        Margin="0,20,0,0"
+                        Padding="30,0,30,0"
+                        HorizontalOptions="Center"
+                        Command="{Binding AllowPositionCommand}"
+                        BackgroundColor="{StaticResource Color3}"
+                        TextColor="{StaticResource Color4}">
+                    </Button>
+                </StackLayout>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
