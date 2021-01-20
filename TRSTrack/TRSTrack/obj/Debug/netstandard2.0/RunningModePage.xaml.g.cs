@@ -26,6 +26,9 @@ namespace TRSTrack {
         private global::Xamarin.Forms.Frame OverLayVelocimetro;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Frame OverLayMenuBotoes;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Syncfusion.SfRadialMenu.XForms.SfRadialMenu RadialMenu;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
@@ -34,6 +37,7 @@ namespace TRSTrack {
             MasterGrid = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "MasterGrid");
             Map = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::TRSTrack.Custom.CustomMap>(this, "Map");
             OverLayVelocimetro = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Frame>(this, "OverLayVelocimetro");
+            OverLayMenuBotoes = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Frame>(this, "OverLayMenuBotoes");
             RadialMenu = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Syncfusion.SfRadialMenu.XForms.SfRadialMenu>(this, "RadialMenu");
         }
     }

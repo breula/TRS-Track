@@ -55,14 +55,18 @@ namespace TRSTrack.Services
             return _realm.All<Circuito>().Count();
         }
 
+        public int WayPointsCount()
+        {
+            return _realm.All<WayPoint>().Count();
+        }
+
         public void SalvarWayPoint(WayPoint wayPoint)
         {
-            var count = _realm.All<WayPoint>().Count();
-            var newId = count == 0
-                ? 1
-                : count + 1;
+            var lastId = WayPointsCount() == 0
+                ? 0
+                : _realm.All<WayPoint>().ToList().Max(x => x.Id);
 
-            wayPoint.Id = newId;
+            wayPoint.Id = lastId += 1;
             _realm.Write(() =>
             {
                 _realm.Add(wayPoint);
@@ -94,15 +98,15 @@ namespace TRSTrack.Services
         public ObservableCollection<WayPoint> GetWayPoint(Circuito circuito = null, bool onlyWaypoints = false)
         {
             var objects = circuito == null
-                ? _realm.All<WayPoint>()
-                : _realm.All<WayPoint>().Where(b => b.Circuito == circuito.Id);
+                ? _realm.All<WayPoint>().OrderBy(b => b.Id)
+                : _realm.All<WayPoint>().Where(b => b.Circuito == circuito.Id).OrderBy(b => b.Id);
             var list = new ObservableCollection<WayPoint>();
             if (objects == null) return list;
             foreach (var obj in objects)
             {
                 if (onlyWaypoints)
                 {
-                    if (obj.IsWayPont)
+                    if (obj.IsWayPoint)
                     {
                         list.Add(obj);
                     }
@@ -122,11 +126,10 @@ namespace TRSTrack.Services
 
         public Circuito SalvarCircuito(Circuito circuito)
         {
-            var count = CircuitosCount();
-            var newId = count == 0
-                ? 0
-                : count + 1;
-
+            var lastId = CircuitosCount() == 0 
+                ? 0 
+                : _realm.All<Circuito>().ToList().Max(x => x.Id);
+            var newId = lastId += 1;
             circuito.Id = newId;
             _realm.Write(() => _realm.Add(circuito));
             return new Circuito 

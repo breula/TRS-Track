@@ -48,21 +48,21 @@ namespace TRSTrack.Services
             return StartCommandResult.Sticky;
         }
 
-        private void CurrentPositionChanged(object sender, Plugin.Geolocator.Abstractions.PositionEventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                var position = e.Position;
-                var last = ListeningPosition.Last();
-                if (last == null)
-                {
-                    ListeningPosition.Add((int)Math.Ceiling(e.Position.Speed * 3.6), e.Position.Latitude, e.Position.Longitude);
-                    return;
-                }
-                if (Math.Abs(last.Latitude - e.Position.Latitude) <= 0 && Math.Abs(last.Longitude - e.Position.Longitude) <= 0) return;
-                ListeningPosition.Add((int)Math.Ceiling(e.Position.Speed * 3.6), e.Position.Latitude, e.Position.Longitude);
-            });
-        }
+        //private void CurrentPositionChanged(object sender, Plugin.Geolocator.Abstractions.PositionEventArgs e)
+        //{
+        //    Device.BeginInvokeOnMainThread(() =>
+        //    {
+        //        var position = e.Position;
+        //        var last = ListeningPosition.Last();
+        //        if (last == null)
+        //        {
+        //            ListeningPosition.Add((int)Math.Ceiling(e.Position.Speed * 3.6), e.Position.Latitude, e.Position.Longitude);
+        //            return;
+        //        }
+        //        if (Math.Abs(last.Latitude - e.Position.Latitude) <= 0 && Math.Abs(last.Longitude - e.Position.Longitude) <= 0) return;
+        //        ListeningPosition.Add((int)Math.Ceiling(e.Position.Speed * 3.6), e.Position.Latitude, e.Position.Longitude);
+        //    });
+        //}
 
         public override IBinder OnBind(Intent intent)
         {

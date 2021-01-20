@@ -14,11 +14,10 @@ namespace TRSTrack.Models
 
         public static void Add(int velocidade, double Latitude, double longitude)
         {
-            //Para não acabar com memória do celular, deixar apenas ultimas 5 leituras de grolocalização
+            //Para não acabar com memória do celular, deixar apenas ultimas 5 leituras de geolocalização
             if (DataList.Count >= 10)
             {
                 DataList.RemoveRange(0, DataList.Count-5);
-                //UserDialogs.Instance.Toast($"Items em cache {DataList.Count}", new TimeSpan(1));
             }
 
             DataList.Add(new ListeningPositionData
@@ -32,6 +31,20 @@ namespace TRSTrack.Models
         public static ListeningPositionData Last()
         {
             return DataList.LastOrDefault();
+        }
+
+        public static List<ListeningPositionData> LastRange()
+        {
+            var range = new List<ListeningPositionData>();
+            if (DataList.Count >= 2)
+            {
+                var lastIndex = DataList.Count - 1;
+                range.Add(DataList[lastIndex]);
+                range.Add(DataList[lastIndex - 1]);
+            }
+            return range.Count == 2 
+                ? range 
+                : null;
         }
 
         public static void Clear()

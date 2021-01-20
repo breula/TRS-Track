@@ -54,7 +54,9 @@ namespace TRSTrack.Droid.Renders
             switch (pin.MarkerId)
             {
                 case string _:
-                    marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.flag));
+                    _ = pin.MarkerId.ToString().ToLower() == "largada"
+                        ? marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.flag))
+                        : marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.flag2));
                     break;
                 case float _:
                     marker.SetIcon(BitmapDescriptorFactory.DefaultMarker((float)Convert.ToDecimal(pin.MarkerId)));

@@ -118,6 +118,20 @@ namespace TRSTrack.Controllers
             }
         }
 
+        /// <summary>
+        /// Ajusta retangulo da lista de circuitos na pagina de corrida
+        /// </summary>
+        private Rectangle _circuitListBoud;
+        public Rectangle CircuitListBoud
+        {
+            get => _circuitListBoud;
+            set
+            {
+                _circuitListBoud = value;
+                OnPropertyChanged(nameof(CircuitListBoud));
+            }
+        }
+
         private Point _radialMenuPointPosition;
         public Point RadialMenuPointPosition
         {
@@ -325,6 +339,7 @@ namespace TRSTrack.Controllers
             CurrentAppVersion = $"{AppInfo.VersionString}.{AppInfo.BuildString}";
             var assemblyName = typeof(BaseController).GetTypeInfo().Assembly.GetName();
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
+
             //var dps = Math.Round((mainDisplayInfo.Width - 0.5f) / mainDisplayInfo.Density);
             VelocimeterBoud = mainDisplayInfo.Density <= 3
                 ? mainDisplayInfo.Density <= 2.7
@@ -335,6 +350,10 @@ namespace TRSTrack.Controllers
             RecordButtonsBoud = mainDisplayInfo.Density <= 3
                 ? new Rectangle(0f, 0.93f, 1f, 0.12f)
                 : new Rectangle(0f, 0.93f, 1f, 0.105f);
+
+            CircuitListBoud = mainDisplayInfo.Density <= 3
+                ? new Rectangle(0f, 0.03f, 0.85f, 0.122f)
+                : new Rectangle(0f, 0.03f, 0.85f, 0.14f);
 
             AppImages = new List<MyImage>
             {
@@ -451,7 +470,7 @@ namespace TRSTrack.Controllers
                     Id = Percurso.Count + 1,
                     Latitude = LocationData.Latitude,
                     Longitude = LocationData.Longitude,
-                    IsWayPont = false
+                    IsWayPoint = false
                 });
                 PercursoCount = Percurso.Count();
                 return;
@@ -470,7 +489,7 @@ namespace TRSTrack.Controllers
                 Id = Percurso.Count + 1,
                 Latitude = LocationData.Latitude,
                 Longitude = LocationData.Longitude,
-                IsWayPont = false
+                IsWayPoint = false
             };
 
             if (Percurso.Count >= 1)
@@ -509,7 +528,6 @@ namespace TRSTrack.Controllers
             {
                 polyline.Geopath.Insert(i, new Position(Percurso[i].Latitude, Percurso[i].Longitude));
             }
-
             map.MapElements.Add(polyline);
         }
 

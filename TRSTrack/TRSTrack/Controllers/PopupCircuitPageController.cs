@@ -140,10 +140,9 @@ namespace TRSTrack.Controllers
 
                 var ds = new DataStore();
                 ds.ExcluirCircuito(new Circuito { Id = circuito.Id });
-                Circuitos.Remove(circuito);
+                Circuitos = ds.CircuitoGetList();
                 CircuitCount = Circuitos.Count;
                 EnableDeleteAll = CircuitCount > 0;
-                await MessageService.ShowAsync("Excluído!", $"{nomeCircuito} já era.");
             }
             catch (Exception exception)
             {
@@ -197,7 +196,7 @@ namespace TRSTrack.Controllers
                             Longitude = wayPoint.Longitude,
                             Largada = wayPoint.Largada,
                             Chegada = wayPoint.Chegada,
-                            IsWayPont = wayPoint.IsWayPont,
+                            IsWayPont = wayPoint.IsWayPoint,
                             Distancia = wayPoint.Distancia,
                         }
                     );

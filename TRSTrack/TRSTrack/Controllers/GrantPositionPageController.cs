@@ -96,7 +96,7 @@ namespace TRSTrack.Controllers
             {
                 await MessageService.ShowAsync("Sucesso!", $"Acesso à sua posição foi concedida com sucesso. Você está em {address[0].SubAdminArea}.");
             }
-            ResetNavigationStack(CurrentPage);
+            //ResetNavigationStack(CurrentPage);
             Application.Current.MainPage = new NavigationPage(new MainPage());
         }
     }

@@ -131,7 +131,9 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\flag2.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TRSTrack\TRSTrack.csproj">
       <Project>{22C1B9D4-C8BB-4FBB-A8F8-C6CE43100D7F}</Project>

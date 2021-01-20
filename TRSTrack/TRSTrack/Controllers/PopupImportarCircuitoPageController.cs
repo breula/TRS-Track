@@ -155,7 +155,7 @@ namespace TRSTrack.Controllers
                     Nome = CircuitoLido.Nome,
                     Cidade = CircuitoLido.Cidade,
                     Distancia = CircuitoLido.Distancia,
-                    Data = TimeZoneInfo.ConvertTime(DateTimeOffset.Parse($"{CircuitoLido.Data:dd/MM/yyyy HH:mm:ss}"), TimeZoneInfo.FindSystemTimeZoneById("Brazil/East"))
+                    Data = new DateTimeOffset(Convert.ToDateTime(CircuitoLido.Data), TimeZoneInfo.Local.GetUtcOffset(DateTime.Now))
                 };
                 circuito = ds.SalvarCircuito(circuito);
                 var coutWaypoints = 0;
@@ -173,7 +173,7 @@ namespace TRSTrack.Controllers
                         Chegada = wpi.Chegada,
                         Largada = wpi.Largada,
                         Distancia = wpi.Distancia,
-                        IsWayPont = wpi.IsWayPont
+                        IsWayPoint = wpi.IsWayPont
                     };
                     ds.SalvarWayPoint(wayPoint);
                     if (wpi.IsWayPont) coutWaypoints++; else stepsCount++;

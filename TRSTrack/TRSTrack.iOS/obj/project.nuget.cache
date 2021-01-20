@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rasYmH8duhMBQQgizB9LpwJtzJ/6FHbqdSDP2BhoNE8uGI2f7VGv27qDWN7eqrYGkyySmXKXkFASPjily5L/BQ==",
+  "dgSpecHash": "EX5RzLlYvSBJDzTHZ9JZq9SsH0Odhbe1duaW9xjU2d+klC47Jx/ZIjGnBn8JK6j8PU30rIIjwf5EkHv4JVmalQ==",
   "success": true,
-  "projectFilePath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.iOS\\TRSTrack.iOS.csproj",
+  "projectFilePath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.iOS\\TRSTrack.iOS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marci\\.nuget\\packages\\acr.userdialogs\\7.1.0.470\\acr.userdialogs.7.1.0.470.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\btprogresshud\\1.3.1\\btprogresshud.1.3.1.nupkg.sha512",

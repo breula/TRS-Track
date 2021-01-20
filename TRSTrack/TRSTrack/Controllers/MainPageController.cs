@@ -289,7 +289,6 @@ namespace TRSTrack.Controllers
                 ImageAppIcon = GetImageSource(MyImageEnum.AppIcon);
 
                 var ds = new DataStore();
-                //CircuitCount = ds.CircuitosCount();
                 var rmp = ds.GetRadialMenuPosition();
                 RadialMenuPointPosition = new Point(rmp.X, rmp.Y);
                 var cmz = ds.GetCurrentMapZoom();
@@ -448,7 +447,7 @@ namespace TRSTrack.Controllers
                 Id = WayPoints.Count + 1,
                 Latitude = LocationData.Latitude,
                 Longitude = LocationData.Longitude,
-                IsWayPont = true,
+                IsWayPoint = true,
                 Cor = GetPinColor(BitmapDescriptorFactoryColor.HueBlue).ColorHexCode
             };
             WayPoints.Add(wp);

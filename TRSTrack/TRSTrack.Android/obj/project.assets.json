@@ -3505,11 +3505,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
+      "projectUniqueName": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
       "projectName": "TRSTrack.Android",
-      "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
+      "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
       "packagesPath": "C:\\Users\\marci\\.nuget\\packages\\",
-      "outputPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.Android\\obj\\",
+      "outputPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.Android\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
@@ -3532,8 +3532,8 @@
       "frameworks": {
         "monoandroid90": {
           "projectReferences": {
-            "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack\\TRSTrack.csproj": {
-              "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack\\TRSTrack.csproj"
+            "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack\\TRSTrack.csproj": {
+              "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack\\TRSTrack.csproj"
             }
           }
         }

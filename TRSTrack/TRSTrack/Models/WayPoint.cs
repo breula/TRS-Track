@@ -11,7 +11,7 @@ namespace TRSTrack.Models
             Longitude = 0;
             Largada = false;
             Chegada = false;
-            IsWayPont = false;
+            IsWayPoint = false;
             Distancia = 0;
         }
 
@@ -33,7 +33,7 @@ namespace TRSTrack.Models
 
         public bool Chegada { get; set; }
 
-        public bool IsWayPont { get; set; }
+        public bool IsWayPoint { get; set; }
 
         /// <summary>
         /// Distancia total do Circuito em Metros

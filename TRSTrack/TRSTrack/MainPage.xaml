@@ -186,7 +186,7 @@
                                 FontSize="18"
                                 FontFamily="TitleFont" 
                                 TextColor="{StaticResource Color4}"
-                                Text="{Binding AppName}" >
+                                Text="TRS Track" >
                             </Label>
                             <Label 
                                 Grid.Row="1" 
@@ -717,9 +717,9 @@
                     Point="{Binding RadialMenuPointPosition}">
                     <xForms1:SfRadialMenu.Items>
                         <xForms1:SfRadialMenuItem 
-                            Text="&#xf3fd;"
+                            Text="&#xe9e4;"
                             FontSize="20"
-                            FontFamily="AwesomeBold"
+                            FontFamily="IconFont"
                             ItemWidth="25"
                             ItemHeight="25"
                             Command="{Binding ShowHideVelocimeterCommand}">
@@ -757,9 +757,9 @@
                             Command="{Binding DecreaseMapZoomCommand}">
                         </xForms1:SfRadialMenuItem>
                         <xForms1:SfRadialMenuItem 
-                            Text="&#xf57c;"
+                            Text="&#xe80b;"
                             FontSize="20"
-                            FontFamily="AwesomeBold"
+                            FontFamily="IconFont"
                             ItemWidth="25"
                             ItemHeight="25"
                             Command="{Binding ChangeMapTypeCommand}">

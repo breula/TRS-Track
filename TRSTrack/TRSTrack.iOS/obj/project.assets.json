@@ -3571,11 +3571,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.iOS\\TRSTrack.iOS.csproj",
+      "projectUniqueName": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.iOS\\TRSTrack.iOS.csproj",
       "projectName": "TRSTrack.iOS",
-      "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.iOS\\TRSTrack.iOS.csproj",
+      "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.iOS\\TRSTrack.iOS.csproj",
       "packagesPath": "C:\\Users\\marci\\.nuget\\packages\\",
-      "outputPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.iOS\\obj\\",
+      "outputPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.iOS\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
@@ -3598,8 +3598,8 @@
       "frameworks": {
         "xamarinios10": {
           "projectReferences": {
-            "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack\\TRSTrack.csproj": {
-              "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack\\TRSTrack.csproj"
+            "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack\\TRSTrack.csproj": {
+              "projectPath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack\\TRSTrack.csproj"
             }
           }
         }

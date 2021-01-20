@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hMlfLrieImnO4hry7L0z1srGjy968+B6mY5z2K0XWKqrsi5+kEavI/dWY4BolOSdVuRkwSrKQMHb1wP1FRh74A==",
+  "dgSpecHash": "GcNUA6w0InFXwk3l9XZcbJTvZw4ndInDQfrZEODzMZOQRAWTCyFAhwGmQzLl+uAtrt8olYv6xD+hYrJyrVwWVA==",
   "success": true,
-  "projectFilePath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRSTrack\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
+  "projectFilePath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marci\\.nuget\\packages\\acr.userdialogs\\7.1.0.470\\acr.userdialogs.7.1.0.470.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\andhud\\1.4.2\\andhud.1.4.2.nupkg.sha512",

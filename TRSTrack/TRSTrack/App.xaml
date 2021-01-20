@@ -28,6 +28,7 @@
             <Setter Property="FontFamily" Value="IconFont"/>
             <Setter Property="FontSize" Value="25"/>
             <Setter Property="TextColor" Value="White"/>
+            <Setter Property="HorizontalOptions" Value="CenterAndExpand"></Setter>
         </Style>
         <Style x:Key="BusieIndicator" TargetType="xForms:SfBusyIndicator">
             <Setter Property="AnimationType" Value="Ball"></Setter>

@@ -3,8 +3,6 @@ using Syncfusion.SfRadialMenu.XForms;
 using Syncfusion.XForms.Backdrop;
 using System;
 using TRSTrack.Controllers;
-using TRSTrack.Models;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -33,6 +31,22 @@ namespace TRSTrack
         protected async override void OnAppearing()
         {
             var position = await CrossGeolocator.Current.GetPositionAsync();
+
+            if (_controller.Percurso != null)
+            {
+                var polyline = new Polyline
+                {
+                    StrokeColor = Color.DodgerBlue,
+                    StrokeWidth = 18
+                };
+
+                polyline.Geopath.Clear();
+                for (var i = 0; i < _controller.Percurso.Count; i++)
+                {
+                    polyline.Geopath.Insert(i, new Position(_controller.Percurso[i].Latitude, _controller.Percurso[i].Longitude));
+                }
+                Map.MapElements.Add(polyline);
+            }
             Map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(position.Latitude, position.Longitude), new Distance(_controller.CurrentMapZoom.Level)));
             base.OnAppearing();
         }
