@@ -35,7 +35,7 @@ namespace TRSTrack.Services
                     }
                     else
                     {
-                        if (Math.Abs(last.Latitude - postion.Latitude) > 0 && Math.Abs(last.Latitude - postion.Longitude) > 0)
+                        if (last.Latitude != postion.Latitude &&  last.Longitude != postion.Longitude)
                         {
                             ListeningPosition.Add((int)Math.Ceiling(postion.Speed * 3.6), postion.Latitude, postion.Longitude);
                         }

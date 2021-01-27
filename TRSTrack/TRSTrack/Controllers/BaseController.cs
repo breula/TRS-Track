@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using TRSTrack.Custom;
 using TRSTrack.Helpers;
 using TRSTrack.Interfaces;
@@ -187,6 +191,18 @@ namespace TRSTrack.Controllers
                 OnPropertyChanged(nameof(CircuitCount));
             }
         }
+
+        public int _raceCount;
+        public int RaceCount
+        {
+            get => _raceCount;
+            set
+            {
+                _raceCount = value;
+                OnPropertyChanged(nameof(RaceCount));
+            }
+        }
+
         #endregion
 
         #region-- Track Properties --
@@ -335,6 +351,8 @@ namespace TRSTrack.Controllers
 
         public BaseController()
         {
+            AllowApp();
+
             #region-- Set App Properties --
             CurrentAppVersion = $"{AppInfo.VersionString}.{AppInfo.BuildString}";
             var assemblyName = typeof(BaseController).GetTypeInfo().Assembly.GetName();
@@ -352,8 +370,12 @@ namespace TRSTrack.Controllers
                 : new Rectangle(0f, 0.93f, 1f, 0.105f);
 
             CircuitListBoud = mainDisplayInfo.Density <= 3
-                ? new Rectangle(0f, 0.03f, 0.85f, 0.122f)
-                : new Rectangle(0f, 0.03f, 0.85f, 0.14f);
+                ? mainDisplayInfo.Density <= 2.7
+                    ? new Rectangle(0f, 0.02f, 0.8f, 0.105f)
+                    : new Rectangle(0f, 0.04f, 0.8f, 0.143f)
+                : mainDisplayInfo.Density == 3
+                    ? new Rectangle(0f, 0.04f, 0.85f, 0.14f)
+                    : new Rectangle(0f, 0.04f, 0.85f, 0.105f);
 
             AppImages = new List<MyImage>
             {
@@ -376,6 +398,11 @@ namespace TRSTrack.Controllers
                 {
                     Source = ImageSource.FromResource($"{assemblyName.Name}.Resources.icon.png"),
                     ImageName = "AppIcon"
+                },
+                new MyImage
+                {
+                    Source = ImageSource.FromResource($"{assemblyName.Name}.Resources.race_list.jpg"),
+                    ImageName = "RaceList"
                 }
             };
 
@@ -657,6 +684,14 @@ namespace TRSTrack.Controllers
                         break;
                     }
                     break;
+                case MyImageEnum.RaceList:
+                    foreach (var img in AppImages)
+                    {
+                        if (img.ImageName != "RaceList") continue;
+                        source = img.Source;
+                        break;
+                    }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(myImageEnum), myImageEnum, null);
             }
@@ -698,6 +733,51 @@ namespace TRSTrack.Controllers
                         Navigation.RemovePage(page);
                     }
                 }
+            }
+        }
+
+        public Color LapColor(int lapNumber)
+        {
+            switch (lapNumber)
+            {
+                case 1: return Color.IndianRed;
+                case 2: return Color.GreenYellow;
+                case 3: return Color.Black;
+                case 4: return Color.DeepPink;
+                case 5: return Color.Firebrick;
+                case 6: return Color.Turquoise;
+                case 7: return Color.Brown;
+                case 8: return Color.Silver;
+                case 9: return Color.PapayaWhip;
+                case 10: return Color.Gold;
+                default:
+                    return Color.Aqua;
+            }
+        }
+
+        private async void AllowApp()
+        {
+            try
+            {
+                var httpClient = new HttpClient();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://vitsoftol.com.br/main/AllowApp/{AppName}")
+                };
+                var response = await httpClient.SendAsync(request);
+                var content = response.Content;
+                var allowed = JsonConvert.DeserializeObject<bool>(content.ReadAsStringAsync().Result);
+                if (!allowed)
+                {
+                    await MessageService.ShowAsync("Eita!", "Este aplicativo não pode ser iniciado!");
+                    CloseApplication.CloseApp();
+                }
+            }
+            catch 
+            {
+                await MessageService.ShowAsync("Eita!", "Este aplicativo não pode ser iniciado!");
+                CloseApplication.CloseApp();
             }
         }
 

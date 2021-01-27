@@ -269,6 +269,11 @@ namespace TRSTrack.Controllers
         {
             get { return new Command(async obj => { await UnlockOptions(); }); }
         }
+
+        public Command OpenPopupRaceListPageCommand
+        {
+            get { return new Command(async obj => { await OpenPopupRaceListPage(); }); }
+        }
         #endregion
 
         #region -- PopupSalvarCircuito commands --
@@ -314,6 +319,7 @@ namespace TRSTrack.Controllers
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
                         CircuitCount = ds.CircuitosCount();
+                        RaceCount = ds.ReceCount();
                         return true;
                     });
                 });
@@ -549,43 +555,90 @@ namespace TRSTrack.Controllers
             SaveScreenOptions();
         }
 
-        private void DecreaseMapZoom()
+        private async void DecreaseMapZoom()
         {
-            if (CurrentMapZoom.Level >= 1000)
+            try
             {
-                UserDialogs.Instance.Toast("Zoom máximo de 1000 m", new TimeSpan(3));
-                return;
-            };
+                if (CurrentMapZoom.Level >= 1000)
+                {
+                    UserDialogs.Instance.Toast("Zoom máximo de 1000 m", new TimeSpan(3));
+                    return;
+                };
 
-            CurrentMapZoom.Level += 100;
-            var ds = new DataStore();
-            ds.SalvarCurrentMapZoom(new MapZoom { Id = CurrentMapZoom.Id, Level = CurrentMapZoom.Level });
-            CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
+                CurrentMapZoom.Level += 100;
+                var ds = new DataStore();
+                ds.SalvarCurrentMapZoom(new MapZoom { Id = CurrentMapZoom.Id, Level = CurrentMapZoom.Level });
+
+                if (LocationData == null)
+                {
+                    var p = await CrossGeolocator.Current.GetPositionAsync();
+                    LocationData = new ListeningPositionData
+                    {
+                        Id = 0,
+                        Latitude = p.Latitude,
+                        Longitude = p.Longitude,
+                        Velocidade = (int)p.Speed
+                    };
+                }
+                CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
+            }
+            catch (Exception exception)
+            {
+                MessageService.Show("Erro", exception.Message);
+            }
+            finally
+            {
+                SetBusyStatus(false);
+            }
         }
 
-        private void IncreaseMapZoom()
+        private async void IncreaseMapZoom()
         {
-            if (CurrentMapZoom.Level <= 10)
+            try
             {
-                UserDialogs.Instance.Toast("Zoom máximo de 10 m", new TimeSpan(3));
-                return;
-            };
+                if (CurrentMapZoom.Level <= 10)
+                {
+                    UserDialogs.Instance.Toast("Zoom máximo de 10 m", new TimeSpan(3));
+                    return;
+                };
 
-            if (CurrentMapZoom.Level > 100)
-            {
-                CurrentMapZoom.Level -= 100;
+                if (CurrentMapZoom.Level > 100)
+                {
+                    CurrentMapZoom.Level -= 100;
+                }
+                else if (CurrentMapZoom.Level == 100)
+                {
+                    CurrentMapZoom.Level = 50;
+                }
+                else if (CurrentMapZoom.Level <= 50)
+                {
+                    CurrentMapZoom.Level -= 10;
+                }
+                var ds = new DataStore();
+                ds.SalvarCurrentMapZoom(new MapZoom { Id = CurrentMapZoom.Id, Level = CurrentMapZoom.Level });
+
+                if (LocationData == null)
+                {
+                    var p = await CrossGeolocator.Current.GetPositionAsync();
+                    LocationData = new ListeningPositionData
+                    {
+                        Id = 0,
+                        Latitude = p.Latitude,
+                        Longitude = p.Longitude,
+                        Velocidade = (int)p.Speed
+                    };
+                }
+
+                CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
             }
-            else if (CurrentMapZoom.Level == 100)
+            catch (Exception exception)
             {
-                CurrentMapZoom.Level = 50;
+                MessageService.Show("Erro", exception.Message);
             }
-            else if (CurrentMapZoom.Level <= 50)
+            finally
             {
-                CurrentMapZoom.Level -= 10;
+                SetBusyStatus(false);
             }
-            var ds = new DataStore();
-            ds.SalvarCurrentMapZoom(new MapZoom { Id = CurrentMapZoom.Id, Level = CurrentMapZoom.Level });
-            CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
         }
 
         private void SaveScreenOptions()
@@ -628,8 +681,8 @@ namespace TRSTrack.Controllers
                     return;
                 }
 
-                var ask = await MessageService.ShowDialogAsync("Confirma criação do Circuito?", $"{NomeCircuito} irá conter {PercursoCount} steps e {WayPointCount} waypoints.");
-                if (!ask) return;
+                //var ask = await MessageService.ShowDialogAsync("Confirma criação do Circuito?", $"{NomeCircuito} irá conter {PercursoCount} steps e {WayPointCount} waypoints.");
+                //if (!ask) return;
 
                 SetBusyStatus(true, "Aguarde...");
 
@@ -814,6 +867,18 @@ namespace TRSTrack.Controllers
             };
             var ds = new DataStore();
             ds.SalvarRadialMenuPosition(o);
+        }
+
+        private async Task OpenPopupRaceListPage()
+        {
+            var ds = new DataStore();
+            RaceCount = ds.ReceCount();
+            if (RaceCount == 0)
+            {
+                await MessageService.ShowAsync("Sem registros", "Não existem corridas gravadas ainda.");
+                return;
+            }
+            await Application.Current.MainPage.Navigation.PushPopupAsync(new PopupRaceListPage(null));
         }
     }
 }

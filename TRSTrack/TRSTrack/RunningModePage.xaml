@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:textInputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms" 
-             xmlns:custom1="clr-namespace:TRSTrack.Custom" xmlns:xForms1="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" 
+             xmlns:custom1="clr-namespace:TRSTrack.Custom" 
+             xmlns:xForms1="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" 
              xmlns:converters="clr-namespace:TRSTrack.Converters" 
              xmlns:xamanimation="clr-namespace:Xamanimation;assembly=Xamanimation"
              x:Class="TRSTrack.RunningModePage"
@@ -31,7 +32,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <AbsoluteLayout>
-                <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" >
+                <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                     <custom1:CustomMap 
                         x:Name="Map"
                         MapType="{Binding CurrentMapType}" 
@@ -77,9 +78,9 @@
                 <Frame
                     x:Name="OverLayMenuBotoes"
                     CornerRadius="10"
-                    AbsoluteLayout.LayoutBounds="0,0.93,1,0.11" 
+                    AbsoluteLayout.LayoutBounds="0,0.93,1,0.125" 
                     AbsoluteLayout.LayoutFlags="All"
-                    IsVisible="{Binding ScreenOptions.ShowMenuBotoes}"
+                    IsVisible="True"
                     Style="{StaticResource MapOverlayCard}"
                     BackgroundColor="Transparent">
                     <StackLayout
@@ -106,9 +107,36 @@
                                 Text="&#xef55;"
                                 Style="{StaticResource MenuRecordButtom}"
                                 Command="{Binding OpenRaceStatisticsCommand}"
-                                IsEnabled="{Binding KeepTrakingPosition}">
+                                IsEnabled="{Binding HasRaceStatistics}">
                             </Button>
                         </StackLayout>
+                    </StackLayout>
+                </Frame>
+
+                <Frame
+                    CornerRadius="10"
+                    AbsoluteLayout.LayoutBounds="0,0.17,0.2,0.13" 
+                    AbsoluteLayout.LayoutFlags="All"
+                    IsVisible="True"
+                    Style="{StaticResource MapOverlayCard}">
+                    <StackLayout
+                        Orientation="Vertical"
+                        HorizontalOptions="CenterAndExpand"
+                        Spacing="0"
+                        Padding="0">
+                        <Label 
+                            HorizontalOptions="Center"
+                            FontFamily="RegularFont"
+                            FontSize="15"
+                            Text="Lap">
+                        </Label>
+                        <Label 
+                            HorizontalOptions="Center"
+                            FontFamily="BoldFont"
+                            FontSize="25"
+                            TextColor="{Binding CurrentLapColor}"
+                            Text="{Binding LapNumber}">
+                        </Label>
                     </StackLayout>
                 </Frame>
             </AbsoluteLayout>

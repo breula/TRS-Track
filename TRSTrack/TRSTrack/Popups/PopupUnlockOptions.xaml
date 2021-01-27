@@ -51,6 +51,7 @@
                         TextColor="Black" 
                         FontFamily="RegularFont"
                         IsPassword="True"
+                        Keyboard="Numeric"
                         Text="{Binding UnlockScreen, Mode=TwoWay}">
                     </Entry>
                     <textInputLayout:SfTextInputLayout.HintLabelStyle>

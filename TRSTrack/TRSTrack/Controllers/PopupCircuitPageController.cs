@@ -136,9 +136,18 @@ namespace TRSTrack.Controllers
                 var ask = await MessageService.ShowDialogAsync("Confirma exclusão?", $"Excluir circuito {nomeCircuito}?");
                 if (!ask) return;
 
+                var ds = new DataStore();
+
+                var hasStatistics = ds.CircuitoHasRaceStatistics(circuito);
+
+                if (hasStatistics)
+                {
+                    ask = await MessageService.ShowDialogAsync("Circuito utilizado?", $"Este circuito tem estatísicas de corrida e ao excluir a estatísitca também será apagada!", "Pode aparagar", "Eita! estão não");
+                    if (!ask) return;
+                }
+
                 SetBusyStatus(true);
 
-                var ds = new DataStore();
                 ds.ExcluirCircuito(new Circuito { Id = circuito.Id });
                 Circuitos = ds.CircuitoGetList();
                 CircuitCount = Circuitos.Count;

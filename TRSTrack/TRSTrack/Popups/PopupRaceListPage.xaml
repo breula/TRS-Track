@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage  
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:local="clr-namespace:TRSTrack.Effects"
+    xmlns:xForms="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms" 
+    xmlns:pages1="http://rotorgames.com" 
+    xmlns:textInputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms" 
+    xmlns:xForms2="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" 
+    xmlns:cards="clr-namespace:Syncfusion.XForms.Cards;assembly=Syncfusion.Cards.XForms"
+    xmlns:converters="clr-namespace:TRSTrack.Converters" 
+    xmlns:custom1="clr-namespace:TRSTrack.Custom" 
+    xmlns:range="clr-namespace:Syncfusion.SfRangeSlider.XForms;assembly=Syncfusion.SfRangeSlider.XForms"
+    x:Class="TRSTrack.Popups.PopupRaceListPage"
+    BackgroundColor="{StaticResource Color3}">
+    <pages:PopupPage.Animation>
+        <pages1:ScaleAnimation 
+            PositionIn="Right"
+            PositionOut="Right"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <ContentPage.Resources>
+        <converters:RaceColorConverter x:Key="RaceColorConverter"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+
+        <StackLayout
+            Spacing="0"
+            Margin="0,0,0,40">
+            <StackLayout
+                MinimumHeightRequest="200"
+                Orientation="Vertical"
+                VerticalOptions="Start">
+                <Grid>
+                    <Image 
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        HeightRequest="150"
+                        Aspect="AspectFill"
+                        Source="{Binding ImageSaveCircuit}">
+                    </Image>
+
+                    <textInputLayout:SfTextInputLayout
+                        BackgroundColor="#50000000"
+                        VerticalOptions="End"
+                        Margin="0,10,0,10"
+                        FocusedColor="White"
+                        UnfocusedColor="White"
+                        ContainerType="Outlined"
+                        OutlineCornerRadius="5"
+                        Hint="Escolha uma Corrida">
+                        <Picker
+                            TextColor="White"
+                            ItemsSource="{Binding Corridas}"
+						    SelectedItem="{Binding CorridaEscolhida, Mode=TwoWay}"
+						    SelectedIndex="0">
+                            <Picker.ItemDisplayBinding>
+                                <Binding Path="DisplayName" />
+                            </Picker.ItemDisplayBinding>
+                        </Picker>
+                        <textInputLayout:SfTextInputLayout.HintLabelStyle>
+                            <textInputLayout:LabelStyle FontSize="16">
+                                <textInputLayout:LabelStyle.FontFamily>
+                                    <OnPlatform x:TypeArguments="x:String" iOS="RegularFont" Android="RegularFont" />
+                                </textInputLayout:LabelStyle.FontFamily>
+                            </textInputLayout:LabelStyle>
+                        </textInputLayout:SfTextInputLayout.HintLabelStyle>
+                    </textInputLayout:SfTextInputLayout>
+                </Grid>
+            </StackLayout>
+
+            <StackLayout
+                Padding="10"
+                Orientation="Vertical"
+                VerticalOptions="CenterAndExpand">
+                
+                <!--Dados Corrida-->
+                <Frame
+                    Padding="5"
+                    CornerRadius="5"
+                    HeightRequest="100"
+                    BackgroundColor="White">
+                    <Grid
+                        ColumnSpacing="0"
+                        RowSpacing="5"
+                        Padding="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="33.3*"></ColumnDefinition>
+                            <ColumnDefinition Width="33.3*"></ColumnDefinition>
+                            <ColumnDefinition Width="33.3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackLayout
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Orientation="Vertical">
+                            <Label Text="&#xef4d;" FontFamily="IconFont" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                            <Label 
+                                HorizontalTextAlignment="Center"
+                                FontSize="14"
+                                TextColor="{StaticResource Color4}"
+                                FontFamily="BoldFont"
+                                Text="{Binding RaceDataShow.Circuito}">
+                            </Label>
+                        </StackLayout>
+                        <StackLayout
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Orientation="Vertical">
+                            <Label Text="&#xf547;" FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                            <Label
+                                HorizontalTextAlignment="Center">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding RaceDataShow.CircuitoDistancia, StringFormat='{0:N0}'}" FontFamily="BoldFont" FontSize="14" TextColor="{StaticResource Color4}"></Span>
+                                        <Span Text=" m" FontFamily="LightFont" FontSize="14" TextColor="{StaticResource Color4}"></Span>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </StackLayout>
+                        <StackLayout
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Orientation="Vertical">
+                            <Label Text="&#xf5a0;" FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                            <Label
+                                HorizontalTextAlignment="Center">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding RaceDataShow.CircuitoCidade}" FontFamily="BoldFont" FontSize="14" TextColor="{StaticResource Color4}"></Span>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </StackLayout>
+                        <StackLayout
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Orientation="Horizontal">
+                            <!--<Label Text="&#xf073;" FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Start"></Label>-->
+                            <Label 
+                                HorizontalOptions="CenterAndExpand"
+                                HorizontalTextAlignment="End"
+                                FontSize="14"
+                                TextColor="{StaticResource Color4}"
+                                FontFamily="BoldFont"
+                                Text="{Binding RaceDataShow.Data,StringFormat='{0:dd/MM/yyyy HH:mm:ss}'}">
+                            </Label>
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+
+                <xForms2:SfListView 
+                    x:Name="ListRace" 
+                    Margin="0,5"
+                    ItemSize="400"
+                    AutoFitMode="Height"
+                    Orientation="Horizontal"
+                    SelectionBackgroundColor="Transparent"
+                    ItemsSource="{Binding RaceLapDataShow}">
+                    <xForms2:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <cards:SfCardView 
+                                IndicatorColor="{Binding LapNumber, Converter={StaticResource RaceColorConverter}}" 
+                                HeightRequest="300"
+                                Padding="0"
+                                Margin="0,5"
+                                BorderColor="#102196F3"
+                                BorderWidth="1"
+                                IndicatorThickness="5"
+                                IndicatorPosition="Left">
+                                
+                                <Grid
+                                    RowSpacing="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="1"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="33*"></ColumnDefinition>
+                                        <ColumnDefinition Width="33*"></ColumnDefinition>
+                                        <ColumnDefinition Width="33*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Frame
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        HorizontalOptions="Start"
+                                        Padding="5"
+                                        WidthRequest="50"
+                                        HasShadow="False"
+                                        BackgroundColor="{Binding LapNumber, Converter={StaticResource RaceColorConverter}}">
+                                        <Label 
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            FontSize="20"
+                                            TextColor="White"
+                                            FontFamily="BoldFont"
+                                            Text="{Binding LapNumber}">
+                                        </Label>
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Command="{Binding Path=BindingContext.IsolateLapCommand, Source={x:Reference ListRace}}"
+                                                CommandParameter="{Binding .}">
+                                            </TapGestureRecognizer>
+                                        </Frame.GestureRecognizers>
+                                    </Frame>
+                                    <StackLayout
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Orientation="Vertical"
+                                        Spacing="0">
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            Text="&#xe01b;" FontFamily="IconFont" FontSize="22" TextColor="{StaticResource Color4}">
+                                        </Label>
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            Text="Tempo Total" FontFamily="RegularFont" FontSize="10" TextColor="{StaticResource Color4}">
+                                        </Label>
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            Text="{Binding TempoTotal}" FontFamily="BoldFont" FontSize="18" TextColor="{StaticResource Color4}">
+                                        </Label>
+                                    </StackLayout>
+                                    <StackLayout
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Orientation="Vertical"
+                                        Spacing="0">
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            Text="&#xe9e4;" FontFamily="IconFont" FontSize="22" TextColor="{StaticResource Color4}">
+                                        </Label>
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            Text="Veloc. Média" FontFamily="RegularFont" FontSize="10" TextColor="{StaticResource Color4}">
+                                        </Label>
+                                        <Label
+                                            HorizontalTextAlignment="Center"
+                                            Text="{Binding VelocidadeMedia}" FontFamily="BoldFont" FontSize="18" TextColor="{StaticResource Color4}">
+                                        </Label>
+                                    </StackLayout>
+                                    <BoxView
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        BackgroundColor="{Binding LapNumber, Converter={StaticResource RaceColorConverter}}">
+                                    </BoxView>
+                                    <StackLayout
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3">
+                                        <xForms2:SfListView
+                                            AutoFitMode="Height"
+                                            SelectionBackgroundColor="Transparent"
+                                            ItemsSource="{Binding RaceLapPartialDataList}">
+                                            <xForms2:SfListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid
+                                                        Padding="5,0">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"></RowDefinition>
+                                                        </Grid.RowDefinitions>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="33*"></ColumnDefinition>
+                                                            <ColumnDefinition Width="33*"></ColumnDefinition>
+                                                            <ColumnDefinition Width="33*"></ColumnDefinition>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0" HorizontalOptions="Start" Text="{Binding DescricaoPassagem}" FontFamily="RegularFont" FontSize="14"></Label>
+                                                        <Label Grid.Column="1" HorizontalOptions="Center" Text="{Binding TempoPassagem}" FontFamily="RegularFont" FontSize="14"></Label>
+                                                        <Label 
+                                                            Grid.Column="2"
+                                                            HorizontalOptions="End">
+                                                            <Label.FormattedText>
+                                                                <FormattedString>
+                                                                    <Span Text="{Binding VelocidadePassagem}" FontFamily="RegularFont" FontSize="14"></Span>
+                                                                    <Span Text=" Km/h" FontFamily="RegularFont" FontSize="12"></Span>
+                                                                </FormattedString>
+                                                            </Label.FormattedText>
+                                                        </Label>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </xForms2:SfListView.ItemTemplate>
+                                        </xForms2:SfListView>
+                                    </StackLayout>
+                                </Grid>
+                            </cards:SfCardView>
+                        </DataTemplate>
+                    </xForms2:SfListView.ItemTemplate>
+                </xForms2:SfListView>
+
+            </StackLayout>
+
+            <StackLayout
+                Spacing="0"
+                Orientation="Vertical"
+                VerticalOptions="EndAndExpand">
+                <custom1:CustomMap 
+                    x:Name="Map"
+                    HeightRequest="300"
+                    MapType="{Binding CurrentMapType}" 
+                    HasZoomEnabled="False"
+                    HasScrollEnabled="True">
+                </custom1:CustomMap>
+
+                <range:SfRangeSlider 
+                    x:Name="rangeZoom" 
+                    HeightRequest="50"
+                    Minimum="10" 
+                    Maximum="500"
+                    BackgroundColor="White"
+                    TrackCornerRadius="20"
+                    Orientation="Horizontal"
+                    ShowRange="False"
+                    StepFrequency="10"
+                    VerticalOptions="FillAndExpand"
+                    TickPlacement="Inline"
+                    TrackColor="#202D4768"
+                    TrackSelectionColor="#802D4768"
+                    TickFrequency="10"
+                    KnobColor="{StaticResource Color4}"
+                    Value="{Binding MapZoom, Mode=TwoWay}">
+                </range:SfRangeSlider>
+            </StackLayout>
+
+            <StackLayout.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Right" Command="{Binding SwipeCommand}"></SwipeGestureRecognizer>
+            </StackLayout.GestureRecognizers>
+
+        </StackLayout>
+     
+    </ContentPage.Content>
+</pages:PopupPage>

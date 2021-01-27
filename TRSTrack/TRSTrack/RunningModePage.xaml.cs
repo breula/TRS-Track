@@ -32,6 +32,7 @@ namespace TRSTrack
         {
             var position = await CrossGeolocator.Current.GetPositionAsync();
             Map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(position.Latitude, position.Longitude), new Distance(_controller.CurrentMapZoom.Level)));
+            _controller.UpdadeReceData();
             base.OnAppearing();
         }
 

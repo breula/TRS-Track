@@ -42,6 +42,7 @@ D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\nets
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupColorDialog.xaml.g.cs
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupEditarCircuito.xaml.g.cs
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupImportarCircuitoPage.xaml.g.cs
+D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupRaceListPage.xaml.g.cs
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupSalvarCircuito.xaml.g.cs
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupUnlockOptions.xaml.g.cs
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\RunningModePage.xaml.g.cs

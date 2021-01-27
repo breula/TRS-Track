@@ -1,6 +1,4 @@
-﻿using Acr.UserDialogs;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace TRSTrack.Models
@@ -10,7 +8,7 @@ namespace TRSTrack.Models
     /// </summary>
     public static class ListeningPosition
     {
-        private static List<ListeningPositionData> DataList = new List<ListeningPositionData>();
+        private static readonly List<ListeningPositionData> DataList = new List<ListeningPositionData>();
 
         public static void Add(int velocidade, double Latitude, double longitude)
         {
@@ -33,20 +31,6 @@ namespace TRSTrack.Models
             return DataList.LastOrDefault();
         }
 
-        public static List<ListeningPositionData> LastRange()
-        {
-            var range = new List<ListeningPositionData>();
-            if (DataList.Count >= 2)
-            {
-                var lastIndex = DataList.Count - 1;
-                range.Add(DataList[lastIndex]);
-                range.Add(DataList[lastIndex - 1]);
-            }
-            return range.Count == 2 
-                ? range 
-                : null;
-        }
-
         public static void Clear()
         {
             DataList.Clear();
@@ -55,6 +39,7 @@ namespace TRSTrack.Models
 
     public class ListeningPositionData
     {
+        public int Id { get; set; }
         public int Velocidade { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

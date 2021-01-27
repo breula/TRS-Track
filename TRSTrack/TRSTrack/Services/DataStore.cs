@@ -8,6 +8,8 @@ using Xamarin.Forms;
 using System.Text;
 using System.Globalization;
 using TRSTrack.Controllers;
+using System.Collections.Generic;
+using TRSTrack.Helpers;
 
 [assembly: Dependency(typeof(DataStore))]
 namespace TRSTrack.Services
@@ -31,18 +33,27 @@ namespace TRSTrack.Services
                     SchemaVersion = 1,
                     MigrationCallback = (migration, oldSchemaVersion) =>
                     {
-                        var newOne = migration.NewRealm.All("LocalLogedUser");
-                        var oldOne = migration.OldRealm.All("LocalLogedUser");
+                        var newOne = migration.NewRealm.All("RaceLapPartial");
+                        var oldOne = migration.OldRealm.All("RaceLapPartial");
                         for (var i = 0; i < newOne.Count(); i++)
                         {
                             var oldObject = oldOne.ElementAt(i);
                             var newObject = newOne.ElementAt(i);
-                            //Change neu property value if necessary
-                            //newObject.Property = oldObject.Propety
                         }
                     }
                 };
                 _realm = Realm.GetInstance(config);
+
+                //var races = GetReces();
+                //foreach (var race in races)
+                //{
+                //    ExcluirCorrida(race);
+                //}
+
+                //ExcluirCorrida(new Race
+                //{
+                //    Id = 1
+                //});
             }
             catch (Exception exception)
             {
@@ -55,9 +66,35 @@ namespace TRSTrack.Services
             return _realm.All<Circuito>().Count();
         }
 
+        public bool CircuitoHasRaceStatistics(Circuito circuito)
+        {
+            var has = _realm.All<Race>().Where(p => p.Circuito == circuito.Id).FirstOrDefault();
+            return has != null;
+        }
+
         public int WayPointsCount()
         {
             return _realm.All<WayPoint>().Count();
+        }
+
+        public int ReceCount()
+        {
+            return _realm.All<Race>().Count();
+        }
+
+        public int LapsCount()
+        {
+            return _realm.All<RaceLap>().Count();
+        }
+
+        public int LapsPartialsCount()
+        {
+            return _realm.All<RaceLapPartial>().Count();
+        }
+
+        public int RaceLapTrackCount()
+        {
+            return _realm.All<RaceLapTrack>().Count();
         }
 
         public void SalvarWayPoint(WayPoint wayPoint)
@@ -124,6 +161,11 @@ namespace TRSTrack.Services
             return new ObservableCollection<Circuito>(_realm.All<Circuito>().ToList());
         }
 
+        public Circuito CircuitoGet(int id)
+        {
+            return _realm.All<Circuito>().Where(p => p.Id == id).FirstOrDefault();
+        }
+
         public Circuito SalvarCircuito(Circuito circuito)
         {
             var lastId = CircuitosCount() == 0 
@@ -157,6 +199,39 @@ namespace TRSTrack.Services
         public void ExcluirCircuito(Circuito circuito)
         {
             var obj = _realm.All<Circuito>().FirstOrDefault(b => b.Id == circuito.Id);
+
+            //Exclui estatisticas
+            var races = GetReces(circuito);
+            foreach (var race in races)
+            {
+                var laps = GetLaps(race);
+                foreach (var lap in laps)
+                {
+                    var partials = GetLapPartials(lap);
+                    foreach (var partial in partials)
+                    {
+                        using (var db = _realm.BeginWrite())
+                        {
+                            _realm.Remove(partial);
+                            db.Commit();
+                        }
+                    }
+                    var tracks = GetLapTrack(race, lap);
+                    foreach (var track in tracks)
+                    {
+                        using (var db = _realm.BeginWrite())
+                        {
+                            _realm.Remove(track);
+                            db.Commit();
+                        }
+                    }
+                }
+                using (var db = _realm.BeginWrite())
+                {
+                    _realm.Remove(race);
+                    db.Commit();
+                }
+            }
 
             //Exclui os waypoins vinculados ao circuito
             var wayPoints = GetWayPoint(circuito);
@@ -304,6 +379,217 @@ namespace TRSTrack.Services
                 text.Normalize(NormalizationForm.FormD)
                 .Where(ch => CharUnicodeInfo.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)
               ).Normalize(NormalizationForm.FormC);
+        }
+
+        public Race SalvarCorrida(Circuito circuito, ObservableCollection<RaceLapTempItem> laps)
+        {
+            var lastId = ReceCount() == 0
+                ? 0
+                : _realm.All<Race>().ToList().Max(x => x.Id);
+            var raceId = lastId += 1;
+
+            var race = new Race
+            {
+                Id = raceId,
+                Nome = $"Corrida {raceId}",
+                Circuito = circuito.Id,
+                DisplayName = $"Corrida {raceId}, {circuito.Nome} em {DateTime.Now:dd/MM/yyyy}"
+            };
+
+            //Salva Corrida
+            _realm.Write(() => _realm.Add(race));
+
+            var dl = new ObservableCollection<RaceLapTempItem>(laps.Distinct());
+
+            foreach (var lap in laps)
+            {
+                lastId = LapsCount() == 0
+                    ? 0
+                    : _realm.All<RaceLap>().ToList().Max(x => x.Id);
+                var lapId = lastId += 1;
+
+                ///Media de velocidade
+                var dadosVolta = laps.Where(m => m.LapNumber == lap.LapNumber).ToList();
+                var velocidadeMedia = 0;
+                var tempoTotal = 0;
+                foreach (var dados in dadosVolta)
+                {
+                    velocidadeMedia += dados.Velocidade;
+                    tempoTotal += Tools.StringTimeToMileSeconds(dados.TempoParcial);
+                }
+                velocidadeMedia = velocidadeMedia / dadosVolta.Count;
+                TimeSpan ts = TimeSpan.FromMilliseconds(tempoTotal);
+                var volta = new RaceLap
+                {
+                    Id = lapId,
+                    Race = raceId,
+                    LapNumber = lap.LapNumber,
+                    VelocidadeMedia = velocidadeMedia,
+                    TempoTotal = $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}",
+                };
+
+                ///Salva a volta
+                _realm.Write(() => _realm.Add(volta));
+
+                ///Salva parciais da volta
+                foreach (var dados in dadosVolta)
+                {
+                    lastId = LapsPartialsCount() == 0
+                        ? 0
+                        : _realm.All<RaceLapPartial>().ToList().Max(x => x.Id);
+                    var partialId = lastId += 1;
+                    var parcial = new RaceLapPartial
+                    {
+
+                        Id = partialId,
+                        Corrida = lapId,
+                        DescricaoPassagem = dados.CheckPoint,
+                        NumeroPassagem = volta.LapNumber,
+                        TempoPassagem = dados.TempoParcial,
+                        VelocidadePassagem = dados.Velocidade
+                    };
+
+                    ///Salva parciais da volta
+                    _realm.Write(() => _realm.Add(parcial));
+                }
+
+                ///Salvar step by step
+                var idLapTrack = RaceLapTrackCount() == 0
+                    ? 0
+                    : _realm.All<RaceLapTrack>().ToList().Max(x => x.Id);
+                var track = new RaceLapTrack
+                {
+                    Id = idLapTrack + 1,
+                    Corrida = raceId,
+                    LapNumber = lap.LapNumber,
+                    Latitude = lap.Latitude,
+                    Longitude = lap.Longitude
+                };
+                _realm.Write(() => _realm.Add(track));
+            }
+
+            return race;
+        }
+
+        public void ExcluirCorrida(Race race)
+        {
+            var laps = GetLaps(race);
+            foreach (var lap in laps)
+            {
+                var partials = GetLapPartials(lap);
+                foreach (var partial in partials)
+                {
+                    using (var db = _realm.BeginWrite())
+                    {
+                        _realm.Remove(partial);
+                        db.Commit();
+                    }
+                }
+                var tracks = GetLapTrack(race,lap);
+                foreach (var track in tracks)
+                {
+                    using (var db = _realm.BeginWrite())
+                    {
+                        _realm.Remove(track);
+                        db.Commit();
+                    }
+                }
+                using (var db = _realm.BeginWrite())
+                {
+                    _realm.Remove(lap);
+                    db.Commit();
+                }
+            }
+            using (var db = _realm.BeginWrite())
+            {
+                _realm.Remove(race);
+                db.Commit();
+            }
+        }
+
+        public ObservableCollection<Race> GetReces(Circuito circuito)
+        {
+            var objects = _realm.All<Race>().Where(b => b.Circuito == circuito.Id).OrderBy(b => b.Id);
+            var list = new ObservableCollection<Race>();
+            if (objects == null) return list;
+            foreach (var obj in objects)
+            {
+                list.Add(obj);
+            }
+            return list;
+        }
+
+        public ObservableCollection<Race> GetReces(Race race)
+        {
+            var objects = _realm.All<Race>().Where(b => b.Id == race.Id);
+            var list = new ObservableCollection<Race>();
+            if (objects == null) return list;
+            foreach (var obj in objects)
+            {
+                list.Add(obj);
+            }
+            return list;
+        }
+
+        public ObservableCollection<Race> GetReces()
+        {
+            var objects = _realm.All<Race>().OrderBy(b => b.Id);
+            var list = new ObservableCollection<Race>();
+            if (objects == null) return list;
+            foreach (var obj in objects)
+            {
+                list.Add(obj);
+            }
+            return list;
+        }
+
+        public ObservableCollection<RaceLap> GetLaps(Race race)
+        {
+            var objects = _realm.All<RaceLap>().Where(b => b.Race == race.Id).OrderBy(b => b.Id);
+            var list = new ObservableCollection<RaceLap>();
+            if (objects == null) return list;
+            foreach (var obj in objects)
+            {
+                list.Add(obj);
+            }
+            return list;
+        }
+
+        public RaceLap GetLap(Race race, int lapNumber)
+        {
+            var objects = _realm.All<RaceLap>().Where(b => b.Race == race.Id);
+            var list = new ObservableCollection<RaceLap>();
+            if (objects == null) return null;
+            foreach (var obj in objects)
+            {
+                if (obj.LapNumber == lapNumber)
+                    list.Add(obj);
+            }
+            return list[0];
+        }
+
+        public ObservableCollection<RaceLapPartial> GetLapPartials(RaceLap raceLap)
+        {
+            var objects = _realm.All<RaceLapPartial>().Where(b => b.Corrida == raceLap.Id).OrderBy(b => b.Id);
+            var list = new ObservableCollection<RaceLapPartial>();
+            if (objects == null) return list;
+            foreach (var obj in objects)
+            {
+                list.Add(obj);
+            }
+            return list;
+        }
+
+        public ObservableCollection<RaceLapTrack> GetLapTrack(Race race, RaceLap raceLap)
+        {
+            var objects = _realm.All<RaceLapTrack>().Where(b => b.Corrida == race.Id && b.LapNumber == raceLap.LapNumber).OrderBy(b => b.Id);
+            var list = new ObservableCollection<RaceLapTrack>();
+            if (objects == null) return list;
+            foreach (var obj in objects)
+            {
+                list.Add(obj);
+            }
+            return list;
         }
     }
 }

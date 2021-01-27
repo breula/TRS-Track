@@ -49,5 +49,14 @@ namespace TRSTrack.Helpers
                 Thread.Sleep(nota.Key);
             }
         }
+
+        public static int StringTimeToMileSeconds(string tempo)
+        {
+            var hr = Convert.ToInt32(tempo.Split(':')[0]) * 3600000;
+            var mi = Convert.ToInt32(tempo.Split(':')[1]) * 60000;
+            var se = Convert.ToInt32(tempo.Split(':')[2]) * 1000;
+            var ml = Convert.ToInt32(tempo.Split(':')[3]);
+            return hr + mi + se + ml;
+        } 
     }
 }

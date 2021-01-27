@@ -140,7 +140,7 @@
                                                     Orientation="Vertical"
                                                     Spacing="0"
                                                     Padding="15,0,0,0">
-                                                    <Label Text="&#xf547; " FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
+                                                    <Label Text="&#xf547;" FontFamily="AwesomeBold" FontSize="14" TextColor="{StaticResource Color4}" HorizontalTextAlignment="Center"></Label>
                                                     <Label>
                                                         <Label.FormattedText>
                                                             <FormattedString>

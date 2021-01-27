@@ -5,6 +5,7 @@
         SaveCircuit,
         ColorDialog,
         PositionGif,
-        AppIcon
+        AppIcon,
+        RaceList
     }
 }

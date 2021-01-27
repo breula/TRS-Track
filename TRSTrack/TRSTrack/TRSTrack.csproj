@@ -18,6 +18,7 @@
     <None Remove="Resources\icon.png" />
     <None Remove="Resources\MaterialIcons-Regular.ttf" />
     <None Remove="Resources\position.gif" />
+    <None Remove="Resources\race_list.jpg" />
     <None Remove="Resources\save_circuit.jpg" />
     <None Remove="Resources\Ubuntu-Bold.ttf" />
     <None Remove="Resources\Ubuntu-Light.ttf" />
@@ -32,6 +33,7 @@
     <EmbeddedResource Include="Resources\icon.png" />
     <EmbeddedResource Include="Resources\MaterialIcons-Regular.ttf" />
     <EmbeddedResource Include="Resources\position.gif" />
+    <EmbeddedResource Include="Resources\race_list.jpg" />
     <EmbeddedResource Include="Resources\save_circuit.jpg" />
     <EmbeddedResource Include="Resources\Ubuntu-Bold.ttf" />
     <EmbeddedResource Include="Resources\Ubuntu-Light.ttf" />
@@ -81,6 +83,9 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Popups\PopupImportarCircuitoPage.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Popups\PopupRaceListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Popups\PopupSalvarCircuito.xaml">
       <Generator>MSBuild:Compile</Generator>

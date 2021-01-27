@@ -69,7 +69,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     
                     <!--Circuitos-->
@@ -95,12 +95,13 @@
                     </Label>
                     <Frame
                         Grid.Row="0" 
+                        Grid.Column="2"
                         Padding="0"
                         Margin="10,0,10,10"
+                        HorizontalOptions="End"
                         HeightRequest="10"
-                        WidthRequest="10"
-                        CornerRadius="20"
-                        Grid.Column="2">
+                        WidthRequest="30"
+                        CornerRadius="20">
                         <Label 
                             HorizontalOptions="Center"
                             VerticalTextAlignment="Center"
@@ -132,6 +133,33 @@
                             <TapGestureRecognizer Command="{Binding NavigateRacePageCommand}"></TapGestureRecognizer>
                         </Label.GestureRecognizers>
                     </Label>
+                    <Frame
+                        Grid.Row="1" 
+                        Grid.Column="2"
+                        Padding="3"
+                        BackgroundColor="Red"
+                        HorizontalOptions="End"
+                        CornerRadius="20"
+                        Margin="10,0,10,10"
+                        WidthRequest="100">
+                        <Frame
+                            Padding="0"
+                            HorizontalOptions="End"
+                            WidthRequest="25"
+                            CornerRadius="20">
+                            <Label 
+                                HorizontalOptions="Center"
+                                VerticalTextAlignment="Center"
+                                FontFamily="BoldFont"
+                                FontSize="12"
+                                Text="{Binding RaceCount}" 
+                                TextColor="{StaticResource Color4}">
+                            </Label>
+                        </Frame>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenPopupRaceListPageCommand}"></TapGestureRecognizer>
+                        </Frame.GestureRecognizers>
+                    </Frame>
                     
                     <!--Importar Circuito-->
                     <Label 
@@ -230,6 +258,7 @@
                         x:Name="OverLayVelocimetro"
                         Padding="0"
                         CornerRadius="10"
+                        IsVisible="{Binding ScreenOptions.ShowVelocimeter}"
                         AbsoluteLayout.LayoutBounds="{Binding VelocimeterBoud}" 
                         AbsoluteLayout.LayoutFlags="All" 
                         Style="{StaticResource MapOverlayCard}"

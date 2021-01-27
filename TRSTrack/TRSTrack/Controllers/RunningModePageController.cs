@@ -1,5 +1,6 @@
 ﻿using Acr.UserDialogs;
 using Plugin.Geolocator;
+using Rg.Plugins.Popup.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using TRSTrack.Custom;
 using TRSTrack.Helpers;
 using TRSTrack.Models;
+using TRSTrack.Popups;
 using TRSTrack.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -19,14 +21,36 @@ namespace TRSTrack.Controllers
     public class RunningModePageController : BaseController
     {
         #region-- Properties --
-        private DateTime _jaLargou;
-        public DateTime JaLargou
+        private DateTime _justPassedLargadaLargada;
+        public DateTime JustPassedLargada
         {
-            get => _jaLargou;
+            get => _justPassedLargadaLargada;
             set
             {
-                _jaLargou = value;
-                OnPropertyChanged(nameof(JaLargou));
+                _justPassedLargadaLargada = value;
+                OnPropertyChanged(nameof(JustPassedLargada));
+            }
+        }
+
+        private DateTime _justPassedLargadaChegada;
+        public DateTime JustPassedChegada
+        {
+            get => _justPassedLargadaChegada;
+            set
+            {
+                _justPassedLargadaChegada = value;
+                OnPropertyChanged(nameof(JustPassedChegada));
+            }
+        }
+
+        private DateTime _justPassedLargadaWaypoint;
+        public DateTime JustPassedChegadaWaypoint
+        {
+            get => _justPassedLargadaWaypoint;
+            set
+            {
+                _justPassedLargadaWaypoint = value;
+                OnPropertyChanged(nameof(JustPassedChegadaWaypoint));
             }
         }
 
@@ -97,6 +121,17 @@ namespace TRSTrack.Controllers
             }
         }
 
+        private ObservableCollection<WayPoint> _raceMarkers;
+        public ObservableCollection<WayPoint> RaceMarkers
+        {
+            get => _raceMarkers;
+            set
+            {
+                _raceMarkers = value;
+                OnPropertyChanged(nameof(RaceMarkers));
+            }
+        }
+
         private WayPoint _largada;
         public WayPoint Largada
         {
@@ -141,6 +176,38 @@ namespace TRSTrack.Controllers
             }
         }
 
+        private bool _hasRaceStatistics;
+        public bool HasRaceStatistics
+        {
+            get => _hasRaceStatistics;
+            set
+            {
+                _hasRaceStatistics = value;
+                OnPropertyChanged(nameof(HasRaceStatistics));
+            }
+        }
+
+        private Color _currentLapColor;
+        public Color CurrentLapColor
+        {
+            get => _currentLapColor;
+            set
+            {
+                _currentLapColor = value;
+                OnPropertyChanged(nameof(CurrentLapColor));
+            }
+        }
+
+        private int _markLaplistCount;
+        public int MarkLaplistCount
+        {
+            get => _markLaplistCount;
+            set
+            {
+                _markLaplistCount = value;
+                OnPropertyChanged(nameof(MarkLaplistCount));
+            }
+        }
         #endregion
 
         #region-- Commands --
@@ -166,12 +233,17 @@ namespace TRSTrack.Controllers
 
         public Command StartRunCommand
         {
-            get { return new Command(obj => { StartRun(); }); }
+            get { return new Command(async obj => { await StartRun(); }); }
         }
 
         public Command StopRunCommand
         {
             get { return new Command(obj => { StopRun(); }); }
+        }
+
+        public Command OpenRaceStatisticsCommand
+        {
+            get { return new Command(obj => { OpenRaceStatistics(); }); }
         }
         #endregion
 
@@ -204,7 +276,11 @@ namespace TRSTrack.Controllers
                     IsUnlocked = so.IsUnlocked
                 };
                 CurrentMapType = ScreenOptions.MapType == 0 ? MapType.Street : MapType.Satellite;
-                JaLargou = DateTime.MinValue;
+                JustPassedLargada = DateTime.MinValue;
+                JustPassedChegadaWaypoint = JustPassedLargada;
+                JustPassedChegada = JustPassedChegadaWaypoint;
+                CurrentLapColor = Color.Aqua;
+                MarkLaplistCount = 0;
                 Task.Run(StartMap).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -260,7 +336,6 @@ namespace TRSTrack.Controllers
 
         private async void LoadWayPoints()
         {
-            var currentIndex = 0;
             try
             {
                 if (CurrentMapView != null)
@@ -272,6 +347,7 @@ namespace TRSTrack.Controllers
 
                 var ds = new DataStore();
                 WayPercurso = ds.GetWayPoint(CircuitoEscolhido);
+                RaceMarkers = new ObservableCollection<WayPoint>();
 
                 Largada = WayPercurso.Where(p => p.Largada == true).ToList()[0];
                 Chegada = WayPercurso.Where(p => p.Chegada == true).ToList()[0];
@@ -284,40 +360,50 @@ namespace TRSTrack.Controllers
 
                 polyline.Geopath.Clear();
                 var jump = 0;
+                var waypointCount = 1;
                 for (var i = 0; i < WayPercurso.Count; i++)
                 {
-                    currentIndex = i;
                     if (!WayPercurso[i].IsWayPoint)
                     {
                         var p = new Position(WayPercurso[i].Latitude, WayPercurso[i].Longitude);
                         polyline.Geopath.Insert(i- jump, p);
-                        
                     }
 
-                    if (WayPercurso[i].IsWayPoint || WayPercurso[i].Largada || WayPercurso[i].Chegada)
+                    var cp = new CustomPin
                     {
-                        var cp = new CustomPin
-                        {
-                            Label = string.IsNullOrEmpty(WayPercurso[i].Nome) 
-                                ? $"Waypoint {WayPercurso[i].Id}" 
-                                : WayPercurso[i].Nome,
-                            Position = new Position(WayPercurso[i].Latitude, WayPercurso[i].Longitude),
-                            Type = PinType.SavedPin
-                        };
-                        if (WayPercurso[i].Largada)
-                        {
-                            cp.MarkerId = "Largada";
-                        }
-                        else if (WayPercurso[i].Chegada)
-                        {
-                            cp.MarkerId = "Chegada";
-                        }
-                        else
-                        {
-                            jump++;
-                            cp.MarkerId = GetPinColor(WayPercurso[i].Cor).ColorValue;
-                        };
+                        Label = string.IsNullOrEmpty(WayPercurso[i].Nome)
+                            ? $"Waypoint {WayPercurso[i].Id}"
+                            : WayPercurso[i].Nome,
+                        Position = new Position(WayPercurso[i].Latitude, WayPercurso[i].Longitude),
+                        Type = PinType.SavedPin
+                    };
 
+                    if (WayPercurso[i].Largada == true)
+                    {
+                        cp.MarkerId = "Largada";
+                        cp.Name = "Largada";
+                        cp.Label = "Largada";
+                        RaceMarkers.Add(WayPercurso[i]);
+                        CurrentMapView.Pins.Add(cp);
+                        CurrentMapView.CustomPins.Add(cp);
+                    }
+                    else if (WayPercurso[i].Chegada == true)
+                    {
+                        cp.MarkerId = "Chegada";
+                        cp.Name = "Chegada";
+                        cp.Label = "Chegada";
+                        RaceMarkers.Add(WayPercurso[i]);
+                        CurrentMapView.Pins.Add(cp);
+                        CurrentMapView.CustomPins.Add(cp);
+                    }
+                    else if (WayPercurso[i].IsWayPoint == true)
+                    {
+                        jump++;
+                        cp.MarkerId = GetPinColor(WayPercurso[i].Cor).ColorValue;
+                        cp.Name = string.IsNullOrEmpty(WayPercurso[i].Nome) ? $"Waypoint {waypointCount}" : WayPercurso[i].Nome;
+                        cp.Label = string.IsNullOrEmpty(WayPercurso[i].Nome) ? $"Waypoint {waypointCount}" : WayPercurso[i].Nome;
+                        waypointCount++;
+                        RaceMarkers.Add(WayPercurso[i]);
                         CurrentMapView.Pins.Add(cp);
                         CurrentMapView.CustomPins.Add(cp);
                     }
@@ -327,7 +413,7 @@ namespace TRSTrack.Controllers
             }
             catch (Exception exception)
             {
-                await MessageService.ShowAsync("Erro", $"{exception.Message} - {currentIndex}");
+                await MessageService.ShowAsync("Erro", $"{exception.Message}");
             }
             finally
             {
@@ -337,11 +423,11 @@ namespace TRSTrack.Controllers
 
         private void ShowWayPointsList()
         {
-            if (!ScreenOptions.IsUnlocked)
-            {
-                MessageService.Show("Bloqueado", "Necessário desbloquear menu primeiro!");
-                return;
-            }
+            //if (!ScreenOptions.IsUnlocked)
+            //{
+            //    MessageService.Show("Bloqueado", "Necessário desbloquear menu primeiro!");
+            //    return;
+            //}
             ScreenOptions.ShowWayPointsList = !ScreenOptions.ShowWayPointsList;
             SaveScreenOptions();
         }
@@ -424,15 +510,27 @@ namespace TRSTrack.Controllers
             ds.SalvarScreenOptions(o);
         }
 
-        private void StartRun()
+        private async Task StartRun()
         {
-            Tools.Vibrate(40);
-            if (TimeLapsed.Reseted())
+            if (WayPercurso == null)
             {
-                TimeLapsed.Play();
-                LapNumber = 0;
-                RaceLapsList = new ObservableCollection<RaceLapTempItem>();
+                await MessageService.ShowAsync("Opa!", "Escolha um circuito primeiro por favor");
+                return;
             }
+            if (LapNumber > 0)
+            {
+                var ask = await MessageService.ShowDialogAsync("Apagar tudo?", "Se der play novamente os dados da corrida atual serão apagados, deseja continuar?");
+                if (!ask) return;
+                ListeningPosition.Clear();
+                CurrentMapView.MapElements.Clear();
+                CurrentMapView.Pins.Clear();
+                LoadWayPoints();
+            }
+
+            Tools.Vibrate(40);
+            TimeLapsed.Play();
+            LapNumber = 0;
+            RaceLapsList = new ObservableCollection<RaceLapTempItem>();
             ChangeKeepTrakRule(true);
             MessagingCenter.Send("1", "TRSTrackService");
         }
@@ -442,6 +540,7 @@ namespace TRSTrack.Controllers
             Tools.Vibrate(40);
             ChangeKeepTrakRule(false);
             MessagingCenter.Send("0", "TRSTrackService");
+            HasRaceStatistics = RaceLapsList.Count > 0;
         }
 
         private void ChangeKeepTrakRule(bool keepTrack)
@@ -483,107 +582,140 @@ namespace TRSTrack.Controllers
             var lastRecord = ListeningPosition.Last();
             if (lastRecord == null) return;
 
-            var rli = new RaceLapTempItem
+            if (RaceLapsList.Count > 0)
             {
-                TempoParcial = TimeLapsed.Display(),
-                VelocidadeMedia = lastRecord.Velocidade > 0 && RaceLapsList.Count > 0
-                    ? lastRecord.Velocidade / RaceLapsList.Count
-                    : 0,
-                LapNumber = LapNumber,
-                Latitude = lastRecord.Latitude,
-                Longitude = lastRecord.Longitude
-            };
+                var lastPloting = RaceLapsList.Last();
+                if (lastPloting.Latitude == lastRecord.Latitude && lastPloting.Longitude == lastRecord.Longitude) return;
+            }
 
             //Verifica se está em um ponto do percurso(raio de 5 metros)
-            foreach (var ponto in WayPercurso)
+            string wayPointName = null;
+            var isChegada = false;
+            var isLargada = false;
+
+            foreach (var ponto in RaceMarkers)
             {
-                if (ponto.IsWayPoint || ponto.Chegada || ponto.Largada)
+                var distance = Tools.GetDistance(
+                    lastRecord.Latitude,
+                    lastRecord.Longitude,
+                    ponto.Latitude,
+                    ponto.Longitude);
+
+                if (distance >= 5) continue;
+
+                if (ponto.Largada)
                 {
-                    var distance = Tools.GetDistance(
-                        lastRecord.Latitude,
-                        lastRecord.Longitude,
-                        ponto.Latitude,
-                        ponto.Longitude);
-
-                    if (distance <= 8)
+                    isLargada = true;
+                    if (JustPassedLargada == DateTime.MinValue)
                     {
-                        if (ponto.Chegada)
+                        JustPassedLargada = DateTime.Now;
+                        Tools.Vibrate(new List<KeyValuePair<int, int>>
                         {
-                            Tools.Vibrate(new List<KeyValuePair<int, int>>
-                            {
-                                new KeyValuePair<int, int>(30,50),
-                                new KeyValuePair<int, int>(20,80),
-                                new KeyValuePair<int, int>(20,120),
-                                new KeyValuePair<int, int>(20,80),
-                                new KeyValuePair<int, int>(30,50)
-                            });
-                            UserDialogs.Instance.Toast($"Passou pela Chegada, raio de {distance:N3}m", new TimeSpan(3));
-                        }
-                        else if (ponto.Largada)
-                        {
-                            if (JaLargou == DateTime.MinValue)
-                            {
-                                JaLargou = DateTime.Now;
-                            }
-
-                            if (DateTime.Now.Subtract(JaLargou).TotalSeconds >= 30)
-                            {
-                                Tools.Vibrate(new List<KeyValuePair<int, int>>
-                                {
-                                    new KeyValuePair<int, int>(30,50),
-                                    new KeyValuePair<int, int>(20,120),
-                                    new KeyValuePair<int, int>(30,50)
-                                });
-                                UserDialogs.Instance.Toast($"Passou pela Largada, raio de {distance:N3}m", new TimeSpan(3));
-                                LapNumber++;
-                            }
-                        }
-                        else
-                        {
-                            Tools.Vibrate(100);
-                            UserDialogs.Instance.Toast($"Passou por {ponto.Nome}, raio de {distance:N3}m", new TimeSpan(3));
-                        }
+                            new KeyValuePair<int, int>(30,50),
+                            new KeyValuePair<int, int>(20,120),
+                            new KeyValuePair<int, int>(30,50)
+                        });
+                        UserDialogs.Instance.Toast($"Passou pela Largada, raio de {distance:N3}m", new TimeSpan(3));
+                        LapNumber++;
+                        CurrentLapColor = LapColor(LapNumber);
+                                
                     }
-
-                    rli.CheckPoint = ponto.Nome;
+                    else if (DateTime.Now.Subtract(JustPassedLargada).TotalSeconds >= 30)
+                    {
+                        Tools.Vibrate(new List<KeyValuePair<int, int>>
+                        {
+                            new KeyValuePair<int, int>(30,50),
+                            new KeyValuePair<int, int>(20,120),
+                            new KeyValuePair<int, int>(30,50)
+                        });
+                        UserDialogs.Instance.Toast($"Passou pela Largada, raio de {distance:N3}m", new TimeSpan(3));
+                        LapNumber++;
+                        JustPassedLargada = DateTime.Now;
+                        CurrentLapColor = LapColor(LapNumber);
+                        MarkLaplistCount = RaceLapsList.Count;
+                    }
+                    wayPointName = "Largada";
                 }
+                else if (ponto.Chegada)
+                {
+                    isChegada = true;
+                    if (JustPassedChegada == DateTime.MinValue)
+                    {
+                        JustPassedChegada = DateTime.Now;
+                        Tools.Vibrate(new List<KeyValuePair<int, int>>
+                        {
+                            new KeyValuePair<int, int>(30,50),
+                            new KeyValuePair<int, int>(20,80),
+                            new KeyValuePair<int, int>(20,120),
+                            new KeyValuePair<int, int>(20,80),
+                            new KeyValuePair<int, int>(30,50)
+                        });
+                        UserDialogs.Instance.Toast($"Passou pela Chegada, raio de {distance:N3}m", new TimeSpan(3));
+                        TimeLapsed.Reset();
+                    }
+                    else if (DateTime.Now.Subtract(JustPassedChegada).TotalSeconds >= 30)
+                    {
+                        Tools.Vibrate(new List<KeyValuePair<int, int>>
+                        {
+                            new KeyValuePair<int, int>(30,50),
+                            new KeyValuePair<int, int>(20,80),
+                            new KeyValuePair<int, int>(20,120),
+                            new KeyValuePair<int, int>(20,80),
+                            new KeyValuePair<int, int>(30,50)
+                        });
+                        UserDialogs.Instance.Toast($"Passou pela Chegada, raio de {distance:N3}m", new TimeSpan(3));
+                        JustPassedChegada = DateTime.Now;
+                        TimeLapsed.Reset();
+                    }
+                    wayPointName = "Chegada";
+                }
+                else
+                {
+                    if (JustPassedChegadaWaypoint == DateTime.MinValue)
+                    {
+                        JustPassedChegadaWaypoint = DateTime.Now;
+                        Tools.Vibrate(100);
+                        UserDialogs.Instance.Toast($"Passou por {ponto.Nome}, raio de {distance:N3}m", new TimeSpan(3));
+                    }
+                    else if(DateTime.Now.Subtract(JustPassedChegadaWaypoint).TotalSeconds >= 30)
+                    {
+                        Tools.Vibrate(100);
+                        UserDialogs.Instance.Toast($"Passou por {ponto.Nome}, raio de {distance:N3}m", new TimeSpan(3));
+                        JustPassedChegadaWaypoint = DateTime.Now;
+                    }
+                    wayPointName = ponto.Nome;
+                }
+
+                break;
             };
 
-            RaceLapsList.Add(rli);
+            if (LapNumber == 0) return;
+
+            RaceLapsList.Add(new RaceLapTempItem
+            {
+                TempoParcial = TimeLapsed.Display(),
+                Velocidade = lastRecord.Velocidade,
+                CheckPoint = wayPointName,
+                LapNumber = LapNumber,
+                Latitude = lastRecord.Latitude,
+                Longitude = lastRecord.Longitude,
+                Largada = isLargada,
+                Chegada = isChegada
+            });
 
             var polyline = new Polyline
             {
-                StrokeColor = LapColor(LapNumber),
+                StrokeColor = CurrentLapColor,
                 StrokeWidth = 10
             };
 
-            foreach (var item in RaceLapsList)
+            for (int i = MarkLaplistCount; i < RaceLapsList.Count(); i++)
             {
-                var p = new Position(item.Latitude, item.Longitude);
+                var p = new Position(RaceLapsList[i].Latitude, RaceLapsList[i].Longitude);
                 polyline.Geopath.Insert(polyline.Geopath.Count, p);
             }
-            
             CurrentMapView.MapElements.Add(polyline);
             CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lastRecord.Latitude, lastRecord.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
-        }
-
-        private Color LapColor(int lapNumber)
-        {
-            switch (lapNumber)
-            {
-                case 1: return Color.IndianRed;
-                case 2: return Color.GreenYellow;
-                case 3: return Color.Black;
-                case 4: return Color.DeepPink;
-                case 5: return Color.Firebrick;
-                case 6: return Color.Turquoise;
-                case 7: return Color.Brown;
-                case 8: return Color.Silver;
-                case 9: return Color.PapayaWhip;
-                case 10: return Color.Gold;
-                default:
-                    return Color.Aqua;
-            }
         }
 
         public void UpdateRadialMenuPosition(Point point)
@@ -597,6 +729,30 @@ namespace TRSTrack.Controllers
             };
             var ds = new DataStore();
             ds.SalvarRadialMenuPosition(o);
+        }
+
+        public async Task OpenRaceStatistics()
+        {
+            try
+            {
+                var ds = new DataStore();
+                var race = ds.SalvarCorrida(CircuitoEscolhido, RaceLapsList);
+                ListeningPosition.Clear();
+                CurrentMapView.MapElements.Clear();
+                CurrentMapView.Pins.Clear();
+                RaceLapsList.Clear();
+                HasRaceStatistics = RaceLapsList.Count > 0;
+                LoadWayPoints();
+                await Application.Current.MainPage.Navigation.PushPopupAsync(new PopupRaceListPage(race));
+            }
+            catch (Exception exception)
+            {
+                await MessageService.ShowAsync("Erro", exception.Message);
+            }
+            finally
+            {
+                SetBusyStatus(false);
+            }
         }
     }
 }

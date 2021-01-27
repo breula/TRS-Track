@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using System.Globalization;
 
 namespace TRSTrack.Controllers
 {
@@ -149,13 +150,16 @@ namespace TRSTrack.Controllers
 
                 SetBusyStatus(true, "Importando...");
 
+                var dtfs = new DateTimeOffset();
+                DateTimeOffset.TryParse($"{CircuitoLido.Data:dd/MM/yyyy HH:mm:ss}", null, DateTimeStyles.AssumeUniversal, out dtfs);
+
                 var circuito = new Circuito
                 {
                     Id = 0,
                     Nome = CircuitoLido.Nome,
                     Cidade = CircuitoLido.Cidade,
                     Distancia = CircuitoLido.Distancia,
-                    Data = new DateTimeOffset(Convert.ToDateTime(CircuitoLido.Data), TimeZoneInfo.Local.GetUtcOffset(DateTime.Now))
+                    Data = dtfs
                 };
                 circuito = ds.SalvarCircuito(circuito);
                 var coutWaypoints = 0;

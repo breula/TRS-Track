@@ -828,6 +828,7 @@ D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\De
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\mipmap-xxhdpi\launcher_foreground.png
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\mipmap-xxxhdpi\icon.png
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\mipmap-xxxhdpi\launcher_foreground.png
+D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\drawable\flag2.png
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\drawable\flag.png
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\drawable\icon.png
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\drawable\info.png
@@ -1528,4 +1529,3 @@ D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\De
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\stamp\_GenerateJavaStubs.stamp
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\stamp\_GeneratePackageManagerJava.stamp
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\stamp\_ResolveLibraryProjectImports.stamp
-D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack.Android\obj\Debug\90\res\drawable\flag2.png
