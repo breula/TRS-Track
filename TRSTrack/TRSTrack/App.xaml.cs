@@ -39,6 +39,7 @@ namespace TRSTrack
 
         protected override void OnResume()
         {
+            MessagingCenter.Send("1", "TRSTrackService");
         }
     }
 }

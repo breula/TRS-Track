@@ -522,6 +522,8 @@ namespace TRSTrack.Controllers
                 var ask = await MessageService.ShowDialogAsync("Apagar tudo?", "Se der play novamente os dados da corrida atual serão apagados, deseja continuar?");
                 if (!ask) return;
                 ListeningPosition.Clear();
+                RaceLapsList = new ObservableCollection<RaceLapTempItem>();
+                HasRaceStatistics = RaceLapsList.Count > 0;
                 CurrentMapView.MapElements.Clear();
                 CurrentMapView.Pins.Clear();
                 LoadWayPoints();
@@ -532,6 +534,7 @@ namespace TRSTrack.Controllers
             LapNumber = 0;
             RaceLapsList = new ObservableCollection<RaceLapTempItem>();
             ChangeKeepTrakRule(true);
+            HasRaceStatistics = RaceLapsList.Count > 0;
             MessagingCenter.Send("1", "TRSTrackService");
         }
 
