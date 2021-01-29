@@ -7,8 +7,6 @@ using TRSTrack.Services;
 using Xamarin.Forms;
 using System.Text;
 using System.Globalization;
-using TRSTrack.Controllers;
-using System.Collections.Generic;
 using TRSTrack.Helpers;
 
 [assembly: Dependency(typeof(DataStore))]
@@ -43,17 +41,6 @@ namespace TRSTrack.Services
                     }
                 };
                 _realm = Realm.GetInstance(config);
-
-                //var races = GetReces();
-                //foreach (var race in races)
-                //{
-                //    ExcluirCorrida(race);
-                //}
-
-                //ExcluirCorrida(new Race
-                //{
-                //    Id = 1
-                //});
             }
             catch (Exception exception)
             {
