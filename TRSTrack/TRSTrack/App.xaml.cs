@@ -31,15 +31,17 @@ namespace TRSTrack
 
         protected override void OnStart()
         {
+
         }
 
         protected override void OnSleep()
         {
+            
         }
 
         protected override void OnResume()
         {
-            MessagingCenter.Send("1", "TRSTrackService");
+           
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Plugin.Geolocator;
 using Syncfusion.SfRadialMenu.XForms;
 using TRSTrack.Controllers;
+using TRSTrack.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Xaml;
@@ -18,21 +19,38 @@ namespace TRSTrack
             BindingContext = _controller = new RunningModePageController();
             _controller.CatchControl(this);
             _controller.CatchControl(Map);
-            MessagingCenter.Unsubscribe<string>(this, "counterValue");
-            MessagingCenter.Subscribe<string>(this, "counterValue", (value) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    _controller.UpdadeReceData();
-                });
-            });
+            //MessagingCenter.Unsubscribe<string>(this, "counterValue");
+            //MessagingCenter.Subscribe<string>(this, "counterValue", (value) =>
+            //{
+            //    Device.BeginInvokeOnMainThread(() =>
+            //    {
+            //        ListeningPosition.UpdadeReceData();
+            //    });
+            //});
         }
 
         protected async override void OnAppearing()
         {
             var position = await CrossGeolocator.Current.GetPositionAsync();
+            //foreach (var element in ListeningPosition.Map.MapElements)
+            //{
+            //    Map.MapElements.Add(element);
+            //}
+            foreach (var newElement in ListeningPosition.MapListening().MapElements)
+            {
+                var jaExiste = false;
+                foreach (var element in Map.MapElements)
+                {
+                    if (newElement == element)
+                    {
+                        jaExiste = true;
+                        break;
+                    }
+                }
+                if (!jaExiste)
+                    Map.MapElements.Add(newElement);
+            }
             Map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(position.Latitude, position.Longitude), new Distance(_controller.CurrentMapZoom.Level)));
-            _controller.UpdadeReceData();
             base.OnAppearing();
         }
 

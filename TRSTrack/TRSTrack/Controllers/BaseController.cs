@@ -7,9 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using TRSTrack.Custom;
 using TRSTrack.Helpers;
 using TRSTrack.Interfaces;
@@ -92,7 +90,7 @@ namespace TRSTrack.Controllers
         /// <summary>
         /// Cores possíveis para Pin
         /// </summary>
-        public List<PinColor> AvailableColors { get; set; }
+        //public List<PinColor> AvailableColors { get; set; }
 
         /// <summary>
         /// Ajusta retangulo do velocimetro de acordo com resulução do device
@@ -175,6 +173,29 @@ namespace TRSTrack.Controllers
             }
         }
 
+
+        private double _currentLatitude;
+        public double CurrentLatitude
+        {
+            get => _currentLatitude;
+            set
+            {
+                _currentLatitude = value;
+                OnPropertyChanged(nameof(CurrentLatitude));
+            }
+        }
+
+        private double _currentLongitude;
+        public double CurrentLongitude
+        {
+            get => _currentLongitude;
+            set
+            {
+                _currentLongitude = value;
+                OnPropertyChanged(nameof(CurrentLongitude));
+            }
+        }
+
         #endregion
 
         #region-- Database properties --
@@ -207,6 +228,7 @@ namespace TRSTrack.Controllers
 
         #region-- Track Properties --
         public Thread ThreadChronometer = null;
+        public Thread ThreadRefreshMap = null;
 
         private ObservableCollection<WayPoint> _percurso;
         /// <summary>
@@ -292,20 +314,6 @@ namespace TRSTrack.Controllers
             }
         }
 
-        private ListeningPositionData _locationData;
-        /// <summary>
-        /// Current device location
-        /// </summary>
-        public ListeningPositionData LocationData
-        {
-            get => _locationData;
-            set
-            {
-                _locationData = value;
-                OnPropertyChanged(nameof(LocationData));
-            }
-        }
-
         private int _velocidade;
         /// <summary>
         /// Velocidade atual
@@ -351,8 +359,6 @@ namespace TRSTrack.Controllers
 
         public BaseController()
         {
-            AllowApp();
-
             #region-- Set App Properties --
             CurrentAppVersion = $"{AppInfo.VersionString}.{AppInfo.BuildString}";
             var assemblyName = typeof(BaseController).GetTypeInfo().Assembly.GetName();
@@ -405,80 +411,6 @@ namespace TRSTrack.Controllers
                     ImageName = "RaceList"
                 }
             };
-
-            AvailableColors = new List<PinColor>
-            {
-                new PinColor
-                {
-                    Color = Color.FromHex("#FFFF00"),
-                    ColorHexCode = "#FFFF00",
-                    ColorName = BitmapDescriptorFactoryColor.HueYellow,
-                    ColorValue = (float) 60.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#7B00F7"),
-                    ColorHexCode = "#7B00F7",
-                    ColorName = BitmapDescriptorFactoryColor.HueViolet,
-                    ColorValue = (float) 270.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#FF007F"),
-                    ColorHexCode = "#FF007F",
-                    ColorName = BitmapDescriptorFactoryColor.HueRose,
-                    ColorValue = (float) 330.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#FF0000"),
-                    ColorHexCode = "#FF0000",
-                    ColorName = BitmapDescriptorFactoryColor.HueRed,
-                    ColorValue = (float) 0.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#FF4500"),
-                    ColorHexCode = "#FF4500",
-                    ColorName = BitmapDescriptorFactoryColor.HueOrange,
-                    ColorValue = (float) 30.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#FF00FF"),
-                    ColorHexCode = "#FF00FF",
-                    ColorName = BitmapDescriptorFactoryColor.HueMagenta,
-                    ColorValue = (float) 300.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#00ff00"),
-                    ColorHexCode = "#00ff00",
-                    ColorName = BitmapDescriptorFactoryColor.HueGreen,
-                    ColorValue = (float) 120.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#00ffff"),
-                    ColorHexCode = "#00ffff",
-                    ColorName = BitmapDescriptorFactoryColor.HueCyan,
-                    ColorValue = (float) 180.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#0080FF"),
-                    ColorHexCode = "#0080FF",
-                    ColorName = BitmapDescriptorFactoryColor.HueBlue,
-                    ColorValue = (float) 240.0
-                },
-                new PinColor
-                {
-                    Color = Color.FromHex("#007FFF"),
-                    ColorHexCode = "#007FFF",
-                    ColorName = BitmapDescriptorFactoryColor.HueAzure,
-                    ColorValue = (float) 210.0
-                }
-            };
             #endregion
         }
 
@@ -486,8 +418,11 @@ namespace TRSTrack.Controllers
         {
             if (!KeepTrakingPosition) return;
 
-            LocationData = ListeningPosition.Last();
-            if (LocationData == null) return;
+            var last = ListeningPosition.Last();
+            if (last == null) return;
+
+            CurrentLatitude = last.Latitude;
+            CurrentLongitude = last.Longitude;
 
             var lastRecord = Percurso.LastOrDefault();
             if (lastRecord == null)
@@ -495,8 +430,8 @@ namespace TRSTrack.Controllers
                 Percurso.Add(new WayPoint
                 {
                     Id = Percurso.Count + 1,
-                    Latitude = LocationData.Latitude,
-                    Longitude = LocationData.Longitude,
+                    Latitude = last.Latitude,
+                    Longitude = last.Longitude,
                     IsWayPoint = false
                 });
                 PercursoCount = Percurso.Count();
@@ -504,18 +439,18 @@ namespace TRSTrack.Controllers
             }
 
             //Se está parado retorna
-            if (Math.Abs(lastRecord.Latitude - LocationData.Latitude) <= 0 && Math.Abs(lastRecord.Longitude - LocationData.Longitude) <= 0)
+            if (Math.Abs(lastRecord.Latitude - last.Latitude) <= 0 && Math.Abs(lastRecord.Longitude - last.Longitude) <= 0)
             {
                 return;
             }
 
-            Velocidade = LocationData.Velocidade;
+            Velocidade = last.Velocidade;
 
             var wp = new WayPoint
             {
                 Id = Percurso.Count + 1,
-                Latitude = LocationData.Latitude,
-                Longitude = LocationData.Longitude,
+                Latitude = last.Latitude,
+                Longitude = last.Longitude,
                 IsWayPoint = false
             };
 
@@ -524,8 +459,8 @@ namespace TRSTrack.Controllers
                 wp.Distancia = Tools.GetDistance(
                     Percurso[Percurso.Count - 1].Latitude,
                     Percurso[Percurso.Count - 1].Longitude,
-                    LocationData.Latitude,
-                    LocationData.Longitude
+                    last.Latitude,
+                    last.Longitude
                 );
             }
 
@@ -538,7 +473,7 @@ namespace TRSTrack.Controllers
             if (IsRecordPaused) return;
 
             //Move posição apenas se estiver tudo ok
-            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(zoom.Level)));
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(last.Latitude, last.Longitude), Distance.FromMeters(zoom.Level)));
 
             DistanciaPercorrida += wp.Distancia;
             Percurso.Add(wp);
@@ -556,90 +491,6 @@ namespace TRSTrack.Controllers
                 polyline.Geopath.Insert(i, new Position(Percurso[i].Latitude, Percurso[i].Longitude));
             }
             map.MapElements.Add(polyline);
-        }
-
-        /// <summary>
-        /// Retorna cor do Pim
-        /// </summary>
-        /// <param name="colorHexCode">Código hex</param>
-        /// <returns>PinColor</returns>
-        public PinColor GetPinColor(string colorHexCode)
-        {
-            var pinColor = AvailableColors[0];
-            switch (colorHexCode)
-            {
-                case "#7B00F7":
-                    pinColor = AvailableColors[1];
-                    break;
-                case "#FF007F":
-                    pinColor = AvailableColors[2];
-                    break;
-                case "#FF0000":
-                    pinColor = AvailableColors[3];
-                    break;
-                case "#FF4500":
-                    pinColor = AvailableColors[4];
-                    break;
-                case "#FF00FF":
-                    pinColor = AvailableColors[5];
-                    break;
-                case "#00ff00":
-                    pinColor = AvailableColors[6];
-                    break;
-                case "#00ffff":
-                    pinColor = AvailableColors[7];
-                    break;
-                case "#0080FF":
-                    pinColor = AvailableColors[8];
-                    break;
-                case "#007FFF":
-                    pinColor = AvailableColors[9];
-                    break;
-            }
-
-            return pinColor;
-        }
-
-        /// <summary>
-        /// Retorna cor do Pim
-        /// </summary>
-        /// <param name="colorName">Nome da cor</param>
-        /// <returns>PinColor</returns>
-        public PinColor GetPinColor(BitmapDescriptorFactoryColor colorName)
-        {
-            var pinColor = AvailableColors[0];
-            switch (colorName)
-            {
-                case BitmapDescriptorFactoryColor.HueViolet:
-                    pinColor = AvailableColors[1];
-                    break;
-                case BitmapDescriptorFactoryColor.HueRose:
-                    pinColor = AvailableColors[2];
-                    break;
-                case BitmapDescriptorFactoryColor.HueRed:
-                    pinColor = AvailableColors[3];
-                    break;
-                case BitmapDescriptorFactoryColor.HueOrange:
-                    pinColor = AvailableColors[4];
-                    break;
-                case BitmapDescriptorFactoryColor.HueMagenta:
-                    pinColor = AvailableColors[5];
-                    break;
-                case BitmapDescriptorFactoryColor.HueGreen:
-                    pinColor = AvailableColors[6];
-                    break;
-                case BitmapDescriptorFactoryColor.HueCyan:
-                    pinColor = AvailableColors[7];
-                    break;
-                case BitmapDescriptorFactoryColor.HueBlue:
-                    pinColor = AvailableColors[8];
-                    break;
-                case BitmapDescriptorFactoryColor.HueAzure:
-                    pinColor = AvailableColors[9];
-                    break;
-            }
-
-            return pinColor;
         }
 
         /// <summary>
@@ -733,51 +584,6 @@ namespace TRSTrack.Controllers
                         Navigation.RemovePage(page);
                     }
                 }
-            }
-        }
-
-        public Color LapColor(int lapNumber)
-        {
-            switch (lapNumber)
-            {
-                case 1: return Color.IndianRed;
-                case 2: return Color.GreenYellow;
-                case 3: return Color.Black;
-                case 4: return Color.DeepPink;
-                case 5: return Color.Firebrick;
-                case 6: return Color.Turquoise;
-                case 7: return Color.Brown;
-                case 8: return Color.Silver;
-                case 9: return Color.PapayaWhip;
-                case 10: return Color.Gold;
-                default:
-                    return Color.Aqua;
-            }
-        }
-
-        private async void AllowApp()
-        {
-            try
-            {
-                var httpClient = new HttpClient();
-                var request = new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri($"https://vitsoftol.com.br/main/AllowApp/{AppName}")
-                };
-                var response = await httpClient.SendAsync(request);
-                var content = response.Content;
-                var allowed = JsonConvert.DeserializeObject<bool>(content.ReadAsStringAsync().Result);
-                if (!allowed)
-                {
-                    await MessageService.ShowAsync("Eita!", "Este aplicativo não pode ser iniciado!");
-                    CloseApplication.CloseApp();
-                }
-            }
-            catch 
-            {
-                await MessageService.ShowAsync("Eita!", "Este aplicativo não pode ser iniciado!");
-                CloseApplication.CloseApp();
             }
         }
 

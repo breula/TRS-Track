@@ -75,10 +75,10 @@ namespace TRSTrack.Droid.Renders
             }
 
             if (string.IsNullOrWhiteSpace(customPin.Name)) return;
-            var name = Android.Net.Uri.Parse(customPin.Name);
-            var intent = new Intent(Intent.ActionView, name);
-            intent.AddFlags(ActivityFlags.NewTask);
-            Android.App.Application.Context.StartActivity(intent);
+            //var name = Android.Net.Uri.Parse(customPin.Name);
+            //var intent = new Intent(Intent.ActionView, name);
+            //intent.AddFlags(ActivityFlags.NewTask);
+            //Android.App.Application.Context.StartActivity(intent);
         }
 
         public Android.Views.View GetInfoContents(Marker marker)

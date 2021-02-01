@@ -2,10 +2,10 @@
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Plugin.Geolocator;
 using System;
 using System.Threading.Tasks;
 using TRSTrack.Models;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 
@@ -20,26 +20,26 @@ namespace TRSTrack.Services
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
-            Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(2), () =>
             {
                 MessagingCenter.Send(counter.ToString(), "counterValue");
                 counter += 1;
 
-                Task.Run(async () =>
-                {
-                    var postion = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromMilliseconds(100));
+                Task.Run(async () => {
+                    var postion = await Geolocation.GetLocationAsync();
                     var last = ListeningPosition.Last();
                     if (last == null)
                     {
-                        ListeningPosition.Add((int)Math.Ceiling(postion.Speed * 3.6), postion.Latitude, postion.Longitude);
+                        ListeningPosition.Add((int)Math.Ceiling(postion.Speed.Value * 3.6), postion.Latitude, postion.Longitude);
                     }
                     else
                     {
-                        if (last.Latitude != postion.Latitude &&  last.Longitude != postion.Longitude)
+                        if (last.Latitude != postion.Latitude && last.Longitude != postion.Longitude)
                         {
-                            ListeningPosition.Add((int)Math.Ceiling(postion.Speed * 3.6), postion.Latitude, postion.Longitude);
+                            ListeningPosition.Add((int)Math.Ceiling(postion.Speed.Value * 3.6), postion.Latitude, postion.Longitude);
                         }
                     }
+                    return isRunningTimer;
                 });
 
                 return isRunningTimer;
@@ -47,22 +47,6 @@ namespace TRSTrack.Services
 
             return StartCommandResult.Sticky;
         }
-
-        //private void CurrentPositionChanged(object sender, Plugin.Geolocator.Abstractions.PositionEventArgs e)
-        //{
-        //    Device.BeginInvokeOnMainThread(() =>
-        //    {
-        //        var position = e.Position;
-        //        var last = ListeningPosition.Last();
-        //        if (last == null)
-        //        {
-        //            ListeningPosition.Add((int)Math.Ceiling(e.Position.Speed * 3.6), e.Position.Latitude, e.Position.Longitude);
-        //            return;
-        //        }
-        //        if (Math.Abs(last.Latitude - e.Position.Latitude) <= 0 && Math.Abs(last.Longitude - e.Position.Longitude) <= 0) return;
-        //        ListeningPosition.Add((int)Math.Ceiling(e.Position.Speed * 3.6), e.Position.Latitude, e.Position.Longitude);
-        //    });
-        //}
 
         public override IBinder OnBind(Intent intent)
         {
@@ -74,6 +58,7 @@ namespace TRSTrack.Services
             StopSelf();
             counter = 0;
             isRunningTimer = false;
+            ListeningPosition.Clear();
             base.OnDestroy();
         }
     }

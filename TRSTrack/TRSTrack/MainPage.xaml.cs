@@ -1,7 +1,6 @@
 ﻿using Plugin.Geolocator;
 using Syncfusion.SfRadialMenu.XForms;
 using Syncfusion.XForms.Backdrop;
-using System;
 using TRSTrack.Controllers;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
@@ -18,14 +17,14 @@ namespace TRSTrack
             BindingContext = _controller = new MainPageController();
             _controller.CatchControl(this);
             _controller.CatchControl(Map);
-            MessagingCenter.Unsubscribe<string>(this, "counterValue");
-            MessagingCenter.Subscribe<string>(this, "counterValue", (value) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    _controller.UpdadeTrackData(Map);
-                });
-            });
+            //MessagingCenter.Unsubscribe<string>(this, "counterValue");
+            //MessagingCenter.Subscribe<string>(this, "counterValue", (value) =>
+            //{
+            //    Device.BeginInvokeOnMainThread(() =>
+            //    {
+            //        _controller.UpdadeTrackData(Map);
+            //    });
+            //});
         }
 
         protected async override void OnAppearing()
@@ -49,16 +48,6 @@ namespace TRSTrack
             }
             Map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(position.Latitude, position.Longitude), new Distance(_controller.CurrentMapZoom.Level)));
             base.OnAppearing();
-        }
-
-        private void StartService(object sender, EventArgs e)
-        {
-            MessagingCenter.Send("1", "TRSTrackService");
-        }
-
-        private void StopService(object sender, EventArgs e)
-        {
-            MessagingCenter.Send("0", "TRSTrackService");
         }
 
         protected override bool OnBackButtonPressed()

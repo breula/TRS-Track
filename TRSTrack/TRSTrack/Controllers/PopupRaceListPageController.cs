@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TRSTrack.Custom;
+using TRSTrack.Helpers;
 using TRSTrack.Models;
 using TRSTrack.Models.Enums;
 using TRSTrack.Services;
@@ -186,7 +187,7 @@ namespace TRSTrack.Controllers
                 CurrentMapView = (CustomMap)control;
                 CurrentMapView.IsShowingUser = false;
 
-                Device.BeginInvokeOnMainThread(async () =>
+                Task.Run(async () =>
                 {
                     var location = await Geolocation.GetLocationAsync();
                     LatitudeInicial = location.Latitude;
@@ -317,7 +318,7 @@ namespace TRSTrack.Controllers
                     }
                     else if (wayPercurso[i].IsWayPoint == true)
                     {
-                        cp.MarkerId = GetPinColor(wayPercurso[i].Cor).ColorValue;
+                        cp.MarkerId = Tools.GetPinColor(wayPercurso[i].Cor).ColorValue;
                         cp.Name = string.IsNullOrEmpty(wayPercurso[i].Nome) ? $"Waypoint {waypointCount}" : wayPercurso[i].Nome;
                         cp.Label = string.IsNullOrEmpty(wayPercurso[i].Nome) ? $"Waypoint {waypointCount}" : wayPercurso[i].Nome;
                         waypointCount++;
@@ -328,7 +329,7 @@ namespace TRSTrack.Controllers
 
                 var polyline = new Polyline
                 {
-                    StrokeColor = LapColor(raceLap.LapNumber),
+                    StrokeColor = Tools.LapColor(raceLap.LapNumber),
                     StrokeWidth = 8
                 };
 

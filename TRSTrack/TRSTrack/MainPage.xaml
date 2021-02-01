@@ -356,7 +356,7 @@
                                         FontSize="14" 
                                         TextColor="Black"
                                         FontFamily="RegularFont"
-                                        Text="{Binding LocationData.Latitude, StringFormat='{0:N6}'}">
+                                        Text="{Binding CurrentLatitude, StringFormat='{0:N6}'}">
                                     </Label>
                                 </StackLayout>
                                 
@@ -379,7 +379,7 @@
                                         FontSize="14" 
                                         TextColor="Black"
                                         FontFamily="RegularFont"
-                                        Text="{Binding LocationData.Longitude, StringFormat='{0:N6}'}">
+                                        Text="{Binding CurrentLongitude, StringFormat='{0:N6}'}">
                                     </Label>
                                 </StackLayout>
                                 

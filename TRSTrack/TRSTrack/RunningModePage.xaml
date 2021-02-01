@@ -107,7 +107,7 @@
                                 Text="&#xef55;"
                                 Style="{StaticResource MenuRecordButtom}"
                                 Command="{Binding OpenRaceStatisticsCommand}"
-                                IsEnabled="{Binding HasRaceStatistics}">
+                                IsEnabled="{Binding EnablaBurnButtom}">
                             </Button>
                         </StackLayout>
                     </StackLayout>

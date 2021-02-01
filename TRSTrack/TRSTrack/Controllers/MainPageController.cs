@@ -314,15 +314,15 @@ namespace TRSTrack.Controllers
                 };
                 CurrentMapType = ScreenOptions.MapType == 0 ? MapType.Street : MapType.Satellite;
 
-                MainThread.BeginInvokeOnMainThread(() => 
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        CircuitCount = ds.CircuitosCount();
-                        RaceCount = ds.ReceCount();
-                        return true;
-                    });
-                });
+                //MainThread.BeginInvokeOnMainThread(() => 
+                //{
+                //    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                //    {
+                //        CircuitCount = ds.CircuitosCount();
+                //        RaceCount = ds.ReceCount();
+                //        return true;
+                //    });
+                //});
 
                 ResetParameters();
             }
@@ -347,8 +347,8 @@ namespace TRSTrack.Controllers
                 CurrentMapView = (CustomMap)control;
                 CurrentMapView.IsShowingUser = true;
 
-                Device.BeginInvokeOnMainThread(async () =>
-                {
+                Task.Run(async () =>
+                { 
                     var location = await Geolocation.GetLocationAsync();
                     CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(location.Latitude, location.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
                     Velocidade = location.Speed.HasValue
@@ -434,27 +434,26 @@ namespace TRSTrack.Controllers
                 WayPoints = new ObservableCollection<WayPoint>();
             }
             ChangeKeepTrakRule(true);
-            MessagingCenter.Send("1", "TRSTrackService");
         }
 
         private void StopRecord()
         {
             Tools.Vibrate(40);
             ChangeKeepTrakRule(false);
-            MessagingCenter.Send("0", "TRSTrackService");
         }
 
         private void SaveWayPoint()
         {
             Tools.Vibrate(40);
 
+            var last = ListeningPosition.Last();
             var wp = new WayPoint
             {
                 Id = WayPoints.Count + 1,
-                Latitude = LocationData.Latitude,
-                Longitude = LocationData.Longitude,
+                Latitude = last.Latitude,
+                Longitude = last.Longitude,
                 IsWayPoint = true,
-                Cor = GetPinColor(BitmapDescriptorFactoryColor.HueBlue).ColorHexCode
+                Cor = Tools.GetPinColor(BitmapDescriptorFactoryColor.HueBlue).ColorHexCode
             };
             WayPoints.Add(wp);
             WayPointCount = WayPoints.Count;
@@ -464,7 +463,7 @@ namespace TRSTrack.Controllers
                 Label = string.IsNullOrEmpty(wp.Nome) ? $"Waypoint {wp.Id}" : wp.Nome,
                 Position = new Position(wp.Latitude, wp.Longitude),
                 Type = PinType.SavedPin,
-                MarkerId = GetPinColor(wp.Cor).ColorValue
+                MarkerId = Tools.GetPinColor(wp.Cor).ColorValue
             });
         }
 
@@ -489,6 +488,7 @@ namespace TRSTrack.Controllers
         {
             KeepTrakingPosition = keepTrack;
             IsRecordPaused = false;
+            MessagingCenter.Send(KeepTrakingPosition == true ? "1" : "0", "TRSTrackService");
             if (keepTrack)
             {
                 ThreadChronometer = new Thread(UpdateChronometer);
@@ -515,6 +515,7 @@ namespace TRSTrack.Controllers
             while (KeepTrakingPosition)
             {
                 CurrentChronometer = TimeLapsed.Display();
+                UpdadeTrackData(CurrentMapView);
                 Thread.Sleep(1);
             }
         }
@@ -555,7 +556,7 @@ namespace TRSTrack.Controllers
             SaveScreenOptions();
         }
 
-        private async void DecreaseMapZoom()
+        private void DecreaseMapZoom()
         {
             try
             {
@@ -569,18 +570,9 @@ namespace TRSTrack.Controllers
                 var ds = new DataStore();
                 ds.SalvarCurrentMapZoom(new MapZoom { Id = CurrentMapZoom.Id, Level = CurrentMapZoom.Level });
 
-                if (LocationData == null)
-                {
-                    var p = await CrossGeolocator.Current.GetPositionAsync();
-                    LocationData = new ListeningPositionData
-                    {
-                        Id = 0,
-                        Latitude = p.Latitude,
-                        Longitude = p.Longitude,
-                        Velocidade = (int)p.Speed
-                    };
-                }
-                CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
+                var last = ListeningPosition.Last();
+                if (last != null)
+                    CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(last.Latitude, last.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
             }
             catch (Exception exception)
             {
@@ -592,7 +584,7 @@ namespace TRSTrack.Controllers
             }
         }
 
-        private async void IncreaseMapZoom()
+        private void IncreaseMapZoom()
         {
             try
             {
@@ -617,19 +609,9 @@ namespace TRSTrack.Controllers
                 var ds = new DataStore();
                 ds.SalvarCurrentMapZoom(new MapZoom { Id = CurrentMapZoom.Id, Level = CurrentMapZoom.Level });
 
-                if (LocationData == null)
-                {
-                    var p = await CrossGeolocator.Current.GetPositionAsync();
-                    LocationData = new ListeningPositionData
-                    {
-                        Id = 0,
-                        Latitude = p.Latitude,
-                        Longitude = p.Longitude,
-                        Velocidade = (int)p.Speed
-                    };
-                }
-
-                CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(LocationData.Latitude, LocationData.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
+                var last = ListeningPosition.Last();
+                if (last != null)
+                    CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(last.Latitude, last.Longitude), Distance.FromMeters(CurrentMapZoom.Level)));
             }
             catch (Exception exception)
             {
@@ -663,7 +645,8 @@ namespace TRSTrack.Controllers
 
         public async Task OpenSaveCircuitDialog()
         {
-            var local = await CrossGeolocator.Current.GetAddressesForPositionAsync(new Plugin.Geolocator.Abstractions.Position(LocationData.Latitude, LocationData.Longitude));
+            var last = ListeningPosition.Last();
+            var local = await CrossGeolocator.Current.GetAddressesForPositionAsync(new Plugin.Geolocator.Abstractions.Position(last.Latitude, last.Longitude));
             var address = local.ToList();
             if (address.Count > 0)
                 CidadeCircuito = address[0].SubAdminArea;
@@ -771,7 +754,7 @@ namespace TRSTrack.Controllers
                     Label = string.IsNullOrEmpty(wayPoint.Nome) ? $"Waypoint {wayPoint.Id}" : wayPoint.Nome,
                     Position = new Position(wayPoint.Latitude, wayPoint.Longitude),
                     Type = PinType.SavedPin,
-                    MarkerId = GetPinColor(wayPoint.Cor).ColorValue
+                    MarkerId = Tools.GetPinColor(wayPoint.Cor).ColorValue
                 };
                 CurrentMapView.Pins.Add(cp);
                 CurrentMapView.CustomPins.Add(cp);
