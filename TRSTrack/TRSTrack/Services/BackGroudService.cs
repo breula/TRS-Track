@@ -58,7 +58,6 @@ namespace TRSTrack.Services
             StopSelf();
             counter = 0;
             isRunningTimer = false;
-            ListeningPosition.Clear();
             base.OnDestroy();
         }
     }

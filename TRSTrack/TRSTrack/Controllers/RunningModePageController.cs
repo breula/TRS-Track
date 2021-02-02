@@ -4,8 +4,6 @@ using Rg.Plugins.Popup.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using TRSTrack.Custom;
 using TRSTrack.Helpers;
@@ -378,30 +376,21 @@ namespace TRSTrack.Controllers
             {
                 var ask = await MessageService.ShowDialogAsync("Apagar tudo?", "Se der play novamente os dados da corrida atual serão apagados, deseja continuar?");
                 if (!ask) return;
-
-                ListeningPosition.Stop();
-                ListeningPosition.Clear();
-                ListeningPosition.Reset();
-                TimeLapsed.Pause();
-                TimeLapsed.Reset();
-                LoadWayPoints();
-                EnablaBurnButtom = ListeningPosition.MarkersCount() > 0 && KeepTrakingPosition == false;
-                LapNumber = ListeningPosition.CurrentLapNumber;
-                LoadWayPoints();
-                Tools.Vibrate(40);
-                return;
             }
 
-            Tools.Vibrate(40);
-            TimeLapsed.Pause();
-            TimeLapsed.Reset();
-            TimeLapsed.Play();
             ListeningPosition.Stop();
+            ListeningPosition.Clear();
             ListeningPosition.Reset();
-            ListeningPosition.Start();
+            ListeningPosition.Play();
+            LoadWayPoints();
             EnablaBurnButtom = ListeningPosition.MarkersCount() > 0 && KeepTrakingPosition == false;
             LapNumber = ListeningPosition.CurrentLapNumber;
             ChangeKeepTrakRule(true);
+
+            TimeLapsed.Pause();
+            TimeLapsed.Reset();
+            TimeLapsed.Play();
+            Tools.Vibrate(40);
         }
 
         private void StopRun()
@@ -430,62 +419,6 @@ namespace TRSTrack.Controllers
                     await Task.Delay(100);
                 }
             });
-
-            //await Task.Run(async () =>
-            //{
-            //    while (KeepTrakingPosition)
-            //    {
-            //        MainThread.BeginInvokeOnMainThread(() =>
-            //        {
-            //            LapNumber = ListeningPosition.CurrentLapNumber;
-            //            foreach (var newElement in ListeningPosition.MapListening().MapElements)
-            //            {
-            //                var jaExiste = false;
-            //                foreach (var element in CurrentMapView.MapElements)
-            //                {
-            //                    if (newElement == element)
-            //                    {
-            //                        jaExiste = true;
-            //                        break;
-            //                    }
-            //                }
-            //                if (!jaExiste)
-            //                    CurrentMapView.MapElements.Add(newElement);
-            //            };
-            //            var last = ListeningPosition.Last();
-            //            if (last != null)
-            //                CurrentMapView.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(last.Latitude, last.Longitude), new Distance(CurrentMapZoom.Level)));
-            //        });
-
-            //        await Task.Delay(500);
-            //    }
-            //});
-            //if (keepTrack)
-            //{
-            //    ThreadChronometer = new Thread(UpdateChronometer);
-            //    ThreadChronometer.Start();
-            //    ThreadRefreshMap = new Thread(RefreshMap);
-            //    ThreadRefreshMap.Start();
-            //}
-            //else
-            //{
-            //    if (ThreadChronometer != null)
-            //    {
-            //        while (ThreadChronometer.IsAlive)
-            //        {
-            //            ThreadChronometer.Abort();
-            //        }
-            //        ThreadChronometer = null;
-            //    }
-            //    if (ThreadRefreshMap != null)
-            //    {
-            //        while (ThreadRefreshMap.IsAlive)
-            //        {
-            //            ThreadRefreshMap.Abort();
-            //        }
-            //        ThreadRefreshMap = null;
-            //    }
-            //}
             CurrentChronometer = TimeLapsed.Display();
         }
 
@@ -507,9 +440,9 @@ namespace TRSTrack.Controllers
             try
             {
                 SetBusyStatus(true, "Aguarde...");
+                var laps = ListeningPosition.Laps();
                 var ds = new DataStore();
-                var race = ds.SalvarCorrida(CircuitoEscolhido, ListeningPosition.Laps());
-                ListeningPosition.Stop();
+                var race = ds.SalvarCorrida(CircuitoEscolhido, laps);
                 ListeningPosition.Clear();
                 CurrentMapView.MapElements.Clear();
                 CurrentMapView.Pins.Clear();

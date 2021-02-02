@@ -179,7 +179,7 @@ namespace TRSTrack.Models
             JustPassedWaypoint = DateTime.MinValue;
         }
 
-        public static void Start()
+        public static void Play()
         {
             Stoped = false;
         }
