@@ -58,5 +58,10 @@ namespace TRSTrack
         {
             _controller.UpdateRadialMenuPosition(e.NewValue);
         }
+
+        private void BtnSalvarRange_Clicked(object sender, System.EventArgs e)
+        {
+            _controller.SalvarRange((int)RangeDistance.Value);
+        }
     }
 }

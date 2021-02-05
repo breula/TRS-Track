@@ -27,6 +27,7 @@ namespace TRSTrack.Models
         private static DateTime JustPassedChegada = DateTime.MinValue;
         private static DateTime JustPassedWaypoint = DateTime.MinValue;
         private static Color CurrentLapColor;
+        private static int RaceAdjustValue = 5;
 
         public static void Add(int velocidade, double Latitude, double longitude)
         {
@@ -182,6 +183,8 @@ namespace TRSTrack.Models
         public static void Play()
         {
             Stoped = false;
+            var ds = new DataStore();
+            RaceAdjustValue = ds.RangeAdjust().Range;
         }
 
         public static ObservableCollection<RaceLapTempItem> Laps()
@@ -222,7 +225,7 @@ namespace TRSTrack.Models
 
                 System.Diagnostics.Debug.WriteLine(distance.ToString());
 
-                if (distance >= 15) continue;
+                if (distance >= RaceAdjustValue) continue;
 
                 if (ponto.Largada)
                 {

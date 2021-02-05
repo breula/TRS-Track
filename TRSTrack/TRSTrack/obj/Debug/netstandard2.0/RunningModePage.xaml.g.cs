@@ -29,7 +29,16 @@ namespace TRSTrack {
         private global::Xamarin.Forms.Frame OverLayMenuBotoes;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Syncfusion.SfRangeSlider.XForms.SfRangeSlider RangeDistance;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Xamarin.Forms.Button BtnSalvarRange;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Syncfusion.SfRadialMenu.XForms.SfRadialMenu RadialMenu;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
+        private global::Syncfusion.SfBusyIndicator.XForms.SfBusyIndicator Busyindicator;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private void InitializeComponent() {
@@ -38,7 +47,10 @@ namespace TRSTrack {
             Map = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::TRSTrack.Custom.CustomMap>(this, "Map");
             OverLayVelocimetro = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Frame>(this, "OverLayVelocimetro");
             OverLayMenuBotoes = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Frame>(this, "OverLayMenuBotoes");
+            RangeDistance = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Syncfusion.SfRangeSlider.XForms.SfRangeSlider>(this, "RangeDistance");
+            BtnSalvarRange = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Button>(this, "BtnSalvarRange");
             RadialMenu = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Syncfusion.SfRadialMenu.XForms.SfRadialMenu>(this, "RadialMenu");
+            Busyindicator = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Syncfusion.SfBusyIndicator.XForms.SfBusyIndicator>(this, "Busyindicator");
         }
     }
 }

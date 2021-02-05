@@ -141,6 +141,17 @@ namespace TRSTrack.Controllers
                 OnPropertyChanged(nameof(CurrentLapColor));
             }
         }
+
+        private int _raceAdjustValue;
+        public int RaceAdjustValue
+        {
+            get => _raceAdjustValue;
+            set
+            {
+                _raceAdjustValue = value;
+                OnPropertyChanged(nameof(RaceAdjustValue));
+            }
+        }
         #endregion
 
         #region-- Commands --
@@ -178,14 +189,13 @@ namespace TRSTrack.Controllers
         {
             get { return new Command(obj => { OpenRaceStatistics(); }); }
         }
+
         #endregion
 
         public RunningModePageController()
         {
             try
             {
-                SetBusyStatus(true, "Iniciando...");
-                
                 Circuitos = new ObservableCollection<Circuito>();
                 
                 var ds = new DataStore();
@@ -210,16 +220,14 @@ namespace TRSTrack.Controllers
                     IsUnlocked = so.IsUnlocked
                 };
                 CurrentMapType = ScreenOptions.MapType == 0 ? MapType.Street : MapType.Satellite;
-                
+
+                RaceAdjustValue = ds.RangeAdjust().Range;
+
                 Task.Run(StartMap).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
                 MessageService.Show("Erro", exception.Message);
-            }
-            finally
-            {
-                SetBusyStatus(false);
             }
         }
 
@@ -260,7 +268,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -276,7 +284,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -439,16 +447,50 @@ namespace TRSTrack.Controllers
         {
             try
             {
-                SetBusyStatus(true, "Aguarde...");
+                var Race = new Race();
+                Action OkAction = () =>
+                {
+                    return;
+                };
+                
+                PromptResult pResult = await UserDialogs.Instance.PromptAsync(new PromptConfig
+                {
+                    InputType = InputType.Name,
+                    OkText = "Confirmar",
+                    Title = "Informe seu CPF",
+                });
+                if (!pResult.Ok || string.IsNullOrWhiteSpace(pResult.Text))
+                {
+                    var aConfi = new AlertConfig();
+                    aConfi.SetMessage("Necessário informar um CPF para gravar a corrida");
+                    aConfi.SetTitle("CPF obrigatório");
+                    aConfi.SetOkText("Ok");
+                    aConfi.SetAction(OkAction);
+                    UserDialogs.Instance.Alert(aConfi);
+                    return;
+                }
+
+                if (!Tools.ValidaCpfCnpj(pResult.Text))
+                {
+                    var aConfi = new AlertConfig();
+                    aConfi.SetMessage("Necessário informar um CPF correto para gravar a corrida");
+                    aConfi.SetTitle("CPF inválido");
+                    aConfi.SetOkText("Ok");
+                    aConfi.SetAction(OkAction);
+                    return;
+                }
+                await SetBusyStatus(true, "Aguarde...");
+                //UserDialogs.Instance.Loading("Aguarde...");
                 var laps = ListeningPosition.Laps();
                 var ds = new DataStore();
-                var race = ds.SalvarCorrida(CircuitoEscolhido, laps);
+                Race = ds.SalvarCorrida(CircuitoEscolhido, laps, pResult.Text);
                 ListeningPosition.Clear();
                 CurrentMapView.MapElements.Clear();
                 CurrentMapView.Pins.Clear();
                 EnablaBurnButtom = ListeningPosition.MarkersCount() > 0 && KeepTrakingPosition == false;
                 LoadWayPoints();
-                await Application.Current.MainPage.Navigation.PushPopupAsync(new PopupRaceListPage(race));
+                //UserDialogs.Instance.HideLoading();
+                await Application.Current.MainPage.Navigation.PushPopupAsync(new PopupRaceListPage(Race));
             }
             catch (Exception exception)
             {
@@ -456,7 +498,23 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
+            }
+        }
+
+        public void SalvarRange(int value)
+        {
+            try
+            {
+                var range = new RangeAdjust { Id = 1, Range = value };
+                var ds = new DataStore();
+                ds.SalvarRangeAdjust(range);
+                RaceAdjustValue = value;
+                MessageService.Show("Salvo", $"Range de chegada e largada salvo com raio de {value} metros! Entra em vigor na próxima vez que iniciar corrida.");
+            }
+            catch (Exception exception)
+            {
+                MessageService.Show("Erro", exception.Message);
             }
         }
     }

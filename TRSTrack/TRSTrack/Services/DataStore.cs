@@ -17,75 +17,81 @@ namespace TRSTrack.Services
     /// </summary>
     public class DataStore
     {
-        private readonly Realm _realm;
+        private Realm _realm;
+
+        private Realm RebindRealmInstace()
+        {
+            var config = new RealmConfiguration
+            {
+                SchemaVersion = 2,
+                MigrationCallback = (migration, oldSchemaVersion) =>
+                {
+                    var newOne = migration.NewRealm.All("Race");
+                    var oldOne = migration.OldRealm.All("Race");
+                    for (var i = 0; i < newOne.Count(); i++)
+                    {
+                        var oldObject = oldOne.ElementAt(i);
+                        var newObject = newOne.ElementAt(i);
+                    }
+                }
+            };
+            return Realm.GetInstance(config);
+        }
 
         /// <summary>
         /// Default contructor
         /// </summary>
         public DataStore()
         {
-            try
-            {
-                var config = new RealmConfiguration
-                {
-                    SchemaVersion = 1,
-                    MigrationCallback = (migration, oldSchemaVersion) =>
-                    {
-                        var newOne = migration.NewRealm.All("RaceLapPartial");
-                        var oldOne = migration.OldRealm.All("RaceLapPartial");
-                        for (var i = 0; i < newOne.Count(); i++)
-                        {
-                            var oldObject = oldOne.ElementAt(i);
-                            var newObject = newOne.ElementAt(i);
-                        }
-                    }
-                };
-                _realm = Realm.GetInstance(config);
-            }
-            catch (Exception exception)
-            {
-                var t = exception.Message;
-            }
+            
         }
 
         public int CircuitosCount()
         {
+            _realm = RebindRealmInstace();
             return _realm.All<Circuito>().Count();
         }
 
         public bool CircuitoHasRaceStatistics(Circuito circuito)
         {
+            _realm = RebindRealmInstace();
             var has = _realm.All<Race>().Where(p => p.Circuito == circuito.Id).FirstOrDefault();
             return has != null;
         }
 
         public int WayPointsCount()
         {
+            _realm = RebindRealmInstace();
             return _realm.All<WayPoint>().Count();
         }
 
         public int ReceCount()
         {
+            _realm = RebindRealmInstace();
             return _realm.All<Race>().Count();
         }
 
         public int LapsCount()
         {
+            _realm = RebindRealmInstace();
             return _realm.All<RaceLap>().Count();
         }
 
         public int LapsPartialsCount()
         {
+            _realm = RebindRealmInstace();
             return _realm.All<RaceLapPartial>().Count();
         }
 
         public int RaceLapTrackCount()
         {
+            _realm = RebindRealmInstace();
             return _realm.All<RaceLapTrack>().Count();
         }
 
         public void SalvarWayPoint(WayPoint wayPoint)
         {
+            _realm = RebindRealmInstace();
             var lastId = WayPointsCount() == 0
                 ? 0
                 : _realm.All<WayPoint>().ToList().Max(x => x.Id);
@@ -99,6 +105,7 @@ namespace TRSTrack.Services
 
         public void UpdateWayPoint(WayPoint wayPoint)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<WayPoint>().FirstOrDefault(b => b.Id == wayPoint.Id && b.Circuito == wayPoint.Circuito);
             if (obj == null) return;
             using (var trans = _realm.BeginWrite())
@@ -111,6 +118,7 @@ namespace TRSTrack.Services
 
         public void ExcluirWayPoint(WayPoint wayPoint)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<WayPoint>().FirstOrDefault(b => b.Id == wayPoint.Id && b.Circuito == wayPoint.Circuito);
             using (var db = _realm.BeginWrite())
             {
@@ -121,6 +129,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<WayPoint> GetWayPoint(Circuito circuito = null, bool onlyWaypoints = false)
         {
+            _realm = RebindRealmInstace();
             var objects = circuito == null
                 ? _realm.All<WayPoint>().OrderBy(b => b.Id)
                 : _realm.All<WayPoint>().Where(b => b.Circuito == circuito.Id).OrderBy(b => b.Id);
@@ -145,16 +154,19 @@ namespace TRSTrack.Services
 
         public ObservableCollection<Circuito> CircuitoGetList()
         {
+            _realm = RebindRealmInstace();
             return new ObservableCollection<Circuito>(_realm.All<Circuito>().ToList());
         }
 
         public Circuito CircuitoGet(int id)
         {
+            _realm = RebindRealmInstace();
             return _realm.All<Circuito>().Where(p => p.Id == id).FirstOrDefault();
         }
 
         public Circuito SalvarCircuito(Circuito circuito)
         {
+            _realm = RebindRealmInstace();
             var lastId = CircuitosCount() == 0 
                 ? 0 
                 : _realm.All<Circuito>().ToList().Max(x => x.Id);
@@ -173,6 +185,7 @@ namespace TRSTrack.Services
 
         public void UpdateCircuito(Circuito circuito)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<Circuito>().FirstOrDefault(b => b.Id == circuito.Id);
             if (obj == null) return;
             using (var trans = _realm.BeginWrite())
@@ -185,6 +198,7 @@ namespace TRSTrack.Services
 
         public void ExcluirCircuito(Circuito circuito)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<Circuito>().FirstOrDefault(b => b.Id == circuito.Id);
 
             //Exclui estatisticas
@@ -241,6 +255,7 @@ namespace TRSTrack.Services
 
         public void ExcluirTodosCircuitos()
         {
+            _realm = RebindRealmInstace();
             var circuitos = _realm.All<Circuito>();
             foreach (var item in circuitos)
             {
@@ -250,6 +265,7 @@ namespace TRSTrack.Services
 
         public void SalvarRadialMenuPosition(RadialMenuPosition radialMenuPosition)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<RadialMenuPosition>().FirstOrDefault();
             if (obj == null)
             {
@@ -263,6 +279,7 @@ namespace TRSTrack.Services
 
         public RadialMenuPosition GetRadialMenuPosition()
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<RadialMenuPosition>().FirstOrDefault();
             return obj ?? new RadialMenuPosition
             {
@@ -274,6 +291,7 @@ namespace TRSTrack.Services
 
         public void SalvarCurrentMapZoom(MapZoom mapZoom)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<MapZoom>().FirstOrDefault();
             if (obj == null)
             {
@@ -287,6 +305,7 @@ namespace TRSTrack.Services
 
         public MapZoom GetCurrentMapZoom()
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<MapZoom>().FirstOrDefault();
             return obj ?? new MapZoom
             {
@@ -297,6 +316,7 @@ namespace TRSTrack.Services
 
         public void SalvarScreenOptions(ScreenOptions screenOptions)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<ScreenOptions>().FirstOrDefault();
             if (obj == null)
             {
@@ -310,6 +330,7 @@ namespace TRSTrack.Services
 
         public ScreenOptions GetScreenOptions()
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<ScreenOptions>().FirstOrDefault();
             return obj ?? new ScreenOptions
             {
@@ -324,6 +345,7 @@ namespace TRSTrack.Services
 
         public RecordAdjust GetRecordAdjust()
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<RecordAdjust>().FirstOrDefault();
             return obj ?? new RecordAdjust
             {
@@ -335,6 +357,7 @@ namespace TRSTrack.Services
 
         public void SalvarRecordAdjust(RecordAdjust recordAdjust)
         {
+            _realm = RebindRealmInstace();
             var obj = _realm.All<RecordAdjust>().FirstOrDefault();
             if (obj == null)
             {
@@ -368,8 +391,9 @@ namespace TRSTrack.Services
               ).Normalize(NormalizationForm.FormC);
         }
 
-        public Race SalvarCorrida(Circuito circuito, ObservableCollection<RaceLapTempItem> laps)
+        public Race SalvarCorrida(Circuito circuito, ObservableCollection<RaceLapTempItem> laps, string cpf)
         {
+            _realm = RebindRealmInstace();
             var lastId = ReceCount() == 0
                 ? 0
                 : _realm.All<Race>().ToList().Max(x => x.Id);
@@ -378,6 +402,7 @@ namespace TRSTrack.Services
             var race = new Race
             {
                 Id = raceId,
+                Cpf = cpf,
                 Nome = $"Corrida {raceId}",
                 Circuito = circuito.Id,
                 DisplayName = $"Corrida {raceId}, {circuito.Nome} em {DateTime.Now:dd/MM/yyyy}"
@@ -385,8 +410,6 @@ namespace TRSTrack.Services
 
             //Salva Corrida
             _realm.Write(() => _realm.Add(race));
-
-            var dl = new ObservableCollection<RaceLapTempItem>(laps.Distinct());
 
             foreach (var lap in laps)
             {
@@ -404,7 +427,7 @@ namespace TRSTrack.Services
                     velocidadeMedia += dados.Velocidade;
                     tempoTotal += Tools.StringTimeToMileSeconds(dados.TempoParcial);
                 }
-                velocidadeMedia = velocidadeMedia / dadosVolta.Count;
+                velocidadeMedia /= dadosVolta.Count;
                 TimeSpan ts = TimeSpan.FromMilliseconds(tempoTotal);
                 var volta = new RaceLap
                 {
@@ -460,6 +483,7 @@ namespace TRSTrack.Services
 
         public void ExcluirCorrida(Race race)
         {
+            _realm = RebindRealmInstace();
             var laps = GetLaps(race);
             foreach (var lap in laps)
             {
@@ -496,6 +520,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<Race> GetReces(Circuito circuito)
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<Race>().Where(b => b.Circuito == circuito.Id).OrderBy(b => b.Id);
             var list = new ObservableCollection<Race>();
             if (objects == null) return list;
@@ -508,6 +533,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<Race> GetReces(Race race)
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<Race>().Where(b => b.Id == race.Id);
             var list = new ObservableCollection<Race>();
             if (objects == null) return list;
@@ -520,6 +546,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<Race> GetReces()
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<Race>().OrderBy(b => b.Id);
             var list = new ObservableCollection<Race>();
             if (objects == null) return list;
@@ -532,6 +559,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<RaceLap> GetLaps(Race race)
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<RaceLap>().Where(b => b.Race == race.Id).OrderBy(b => b.Id);
             var list = new ObservableCollection<RaceLap>();
             if (objects == null) return list;
@@ -544,6 +572,7 @@ namespace TRSTrack.Services
 
         public RaceLap GetLap(Race race, int lapNumber)
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<RaceLap>().Where(b => b.Race == race.Id);
             var list = new ObservableCollection<RaceLap>();
             if (objects == null) return null;
@@ -557,6 +586,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<RaceLapPartial> GetLapPartials(RaceLap raceLap)
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<RaceLapPartial>().Where(b => b.Corrida == raceLap.Id).OrderBy(b => b.Id);
             var list = new ObservableCollection<RaceLapPartial>();
             if (objects == null) return list;
@@ -569,6 +599,7 @@ namespace TRSTrack.Services
 
         public ObservableCollection<RaceLapTrack> GetLapTrack(Race race, RaceLap raceLap)
         {
+            _realm = RebindRealmInstace();
             var objects = _realm.All<RaceLapTrack>().Where(b => b.Corrida == race.Id && b.LapNumber == raceLap.LapNumber).OrderBy(b => b.Id);
             var list = new ObservableCollection<RaceLapTrack>();
             if (objects == null) return list;
@@ -578,5 +609,61 @@ namespace TRSTrack.Services
             }
             return list;
         }
+
+        public RangeAdjust RangeAdjust()
+        {
+            _realm = RebindRealmInstace();
+            var obj = _realm.All<RangeAdjust>().FirstOrDefault();
+            return obj ?? new RangeAdjust
+            {
+                Id = 1,
+                Range = 5
+            };
+        }
+
+        public void SalvarRangeAdjust(RangeAdjust rangeAdjust)
+        {
+            _realm = RebindRealmInstace();
+            var obj = _realm.All<RangeAdjust>().FirstOrDefault();
+            if (obj == null)
+            {
+                _realm.Write(() => _realm.Add(rangeAdjust));
+            }
+            else
+            {
+                _realm.Write(() => _realm.Add(rangeAdjust, true));
+            }
+        }
+
+        //public RaceLap SalvarReceLap(RaceShareLap raceLap, List<RaceShareLapPartial> parciais)
+        //{
+        //    var lastId = LapsCount() == 0
+        //        ? 0
+        //        : _realm.All<RaceLap>().ToList().Max(x => x.Id);
+        //    var lapId = lastId += 1;
+
+        //    ///Media de velocidade
+        //    var dadosVolta = laps.Where(m => m.LapNumber == lap.LapNumber).ToList();
+        //    var velocidadeMedia = 0;
+        //    var tempoTotal = 0;
+        //    foreach (var parcial in parciais)
+        //    {
+        //        velocidadeMedia += dados.Velocidade;
+        //        tempoTotal += Tools.StringTimeToMileSeconds(dados.TempoParcial);
+        //    }
+        //    velocidadeMedia /= dadosVolta.Count;
+        //    TimeSpan ts = TimeSpan.FromMilliseconds(tempoTotal);
+        //    var volta = new RaceLap
+        //    {
+        //        Id = lapId,
+        //        Race = raceId,
+        //        LapNumber = lap.LapNumber,
+        //        VelocidadeMedia = velocidadeMedia,
+        //        TempoTotal = $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}",
+        //    };
+
+        //    ///Salva a volta
+        //    _realm.Write(() => _realm.Add(volta));
+        //}
     }
 }

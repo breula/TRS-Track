@@ -45,7 +45,34 @@
                         Aspect="AspectFill"
                         Source="{Binding ImageSaveCircuit}">
                     </Image>
-
+                    <Button
+                        Margin="0,25,40,0"
+                        HorizontalOptions="End"
+                        Padding="0"
+                        Text="&#xe80d;"
+                        FontFamily="IconFont"
+                        TextColor="{StaticResource Color4}"
+                        FontSize="20"
+                        VerticalOptions="Start"
+                        HeightRequest="30"
+                        WidthRequest="30"
+                        CornerRadius="15"
+                        Command="{Binding ShareRaceCommand}">
+                    </Button>
+                    <Button
+                        Margin="0,25,5,0"
+                        HorizontalOptions="End"
+                        Padding="0"
+                        Text="&#xe92e;"
+                        FontFamily="IconFont"
+                        TextColor="Red"
+                        FontSize="20"
+                        VerticalOptions="Start"
+                        HeightRequest="30"
+                        WidthRequest="30"
+                        CornerRadius="15"
+                        Command="{Binding DeleteRaceCommand}">
+                    </Button>
                     <textInputLayout:SfTextInputLayout
                         BackgroundColor="#50000000"
                         VerticalOptions="End"
@@ -334,7 +361,7 @@
                         </range:SfRangeSlider>
                     </StackLayout>
 
-                    </StackLayout>
+                </StackLayout>
 
             
                 </Grid>

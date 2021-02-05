@@ -20,7 +20,7 @@ namespace TRSTrack.Services
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
-            Device.StartTimer(TimeSpan.FromSeconds(2), () =>
+            Device.StartTimer(TimeSpan.FromMilliseconds(500), () =>
             {
                 MessagingCenter.Send(counter.ToString(), "counterValue");
                 counter += 1;

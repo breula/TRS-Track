@@ -5,7 +5,9 @@
              xmlns:custom1="clr-namespace:TRSTrack.Custom" 
              xmlns:xForms1="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" 
              xmlns:converters="clr-namespace:TRSTrack.Converters" 
-             xmlns:xamanimation="clr-namespace:Xamanimation;assembly=Xamanimation"
+             xmlns:xamanimation="clr-namespace:Xamanimation;assembly=Xamanimation" 
+             xmlns:range="clr-namespace:Syncfusion.SfRangeSlider.XForms;assembly=Syncfusion.SfRangeSlider.XForms" 
+             xmlns:xForms="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
              x:Class="TRSTrack.RunningModePage"
              BackgroundColor="{StaticResource Color3}">
     <ContentPage.Resources>
@@ -139,6 +141,50 @@
                         </Label>
                     </StackLayout>
                 </Frame>
+
+                <Frame
+                    CornerRadius="10"
+                    AbsoluteLayout.LayoutBounds="0.97,0.3,0.2,0.5" 
+                    AbsoluteLayout.LayoutFlags="All"
+                    IsVisible="True"
+                    Style="{StaticResource MapOverlayCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="90*"></RowDefinition>
+                            <RowDefinition Height="10*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <range:SfRangeSlider 
+                            Grid.Row="0"
+                            x:Name="RangeDistance" 
+                            Grid.Column="0"
+                            Minimum="1" 
+                            Maximum="20"
+                            Orientation="Vertical"
+                            ShowRange="False"
+                            StepFrequency="1"
+                            VerticalOptions="FillAndExpand"
+                            TickPlacement="Outside"
+                            TrackColor="#202D4768"
+                            TrackSelectionColor="#802D4768"
+                            KnobColor="{StaticResource Color4}"
+                            TickFrequency="1"
+                            Value="{Binding RaceAdjustValue}">
+                        </range:SfRangeSlider>
+                        <Button 
+                            x:Name="BtnSalvarRange"
+                            Grid.Row="1"
+                            Text="&#xf0c7;"
+                            FontSize="20"
+                            FontFamily="AwesomeBold"
+                            TextColor="{StaticResource Color4}"
+                            BackgroundColor="Transparent"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand"
+                            Clicked="BtnSalvarRange_Clicked">
+                        </Button>
+                    </Grid>
+                    
+                </Frame>
             </AbsoluteLayout>
 
             <xForms1:SfRadialMenu 
@@ -189,6 +235,12 @@
                     </xForms1:SfRadialMenuItem>
                 </xForms1:SfRadialMenu.Items>
             </xForms1:SfRadialMenu>
+
+            <xForms:SfBusyIndicator 
+                x:Name="Busyindicator"
+                IsBusy="{Binding IsBusy}"
+                Style="{StaticResource BusieIndicator}">
+            </xForms:SfBusyIndicator>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

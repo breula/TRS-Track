@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Threading;
 using TRSTrack.Models;
 using TRSTrack.Models.Enums;
@@ -10,6 +11,7 @@ namespace TRSTrack.Helpers
 {
     public static class Tools
     {
+        #region-- Private Methods --
         private static readonly List<PinColor> AvailableColors = new List<PinColor>
             {
                 new PinColor
@@ -83,6 +85,111 @@ namespace TRSTrack.Helpers
                     ColorValue = (float)210.0
                 }
             };
+        
+        private static bool ValidaCpf(string cpf)
+        {
+            var valor = cpf.Replace(".", "");
+            valor = valor.Replace("-", "");
+
+            if (valor.Length != 11)
+                return false;
+
+            var igual = true;
+            for (var i = 1; i < 11 && igual; i++)
+                if (valor[i] != valor[0])
+                    igual = false;
+
+            if (igual || valor == "12345678909")
+                return false;
+
+            var numeros = new int[11];
+            for (var i = 0; i < 11; i++)
+                numeros[i] = int.Parse(
+                valor[i].ToString());
+
+            var soma = 0;
+            for (var i = 0; i < 9; i++)
+                soma += (10 - i) * numeros[i];
+
+            var resultado = soma % 11;
+            if (resultado == 1 || resultado == 0)
+            {
+                if (numeros[9] != 0)
+                    return false;
+            }
+            else if (numeros[9] != 11 - resultado)
+                return false;
+
+            soma = 0;
+            for (var i = 0; i < 10; i++)
+                soma += (11 - i) * numeros[i];
+
+            resultado = soma % 11;
+
+            if (resultado == 1 || resultado == 0)
+            {
+                if (numeros[10] != 0)
+                    return false;
+            }
+            else
+                if (numeros[10] != 11 - resultado)
+                return false;
+            return true;
+        }
+
+        private static bool ValidaCnpj(string cnpj)
+        {
+            cnpj = cnpj.Replace(".", "");
+            cnpj = cnpj.Replace("/", "");
+            cnpj = cnpj.Replace("-", "");
+
+            const string ftmt = "6543298765432";
+            var digitos = new int[14];
+            var soma = new int[2];
+            soma[0] = 0;
+            soma[1] = 0;
+            var resultado = new int[2];
+            resultado[0] = 0;
+            resultado[1] = 0;
+            var cnpjOk = new bool[2];
+            cnpjOk[0] = false;
+            cnpjOk[1] = false;
+
+            try
+            {
+                int nrDig;
+                for (nrDig = 0; nrDig < 14; nrDig++)
+                {
+                    digitos[nrDig] = int.Parse(
+                     cnpj.Substring(nrDig, 1));
+                    if (nrDig <= 11)
+                        soma[0] += digitos[nrDig] *
+                                   int.Parse(ftmt.Substring(
+                                       nrDig + 1, 1));
+                    if (nrDig <= 12)
+                        soma[1] += digitos[nrDig] *
+                                   int.Parse(ftmt.Substring(
+                                       nrDig, 1));
+                }
+
+                for (nrDig = 0; nrDig < 2; nrDig++)
+                {
+                    resultado[nrDig] = soma[nrDig] % 11;
+                    if ((resultado[nrDig] == 0) || (resultado[nrDig] == 1))
+                        cnpjOk[nrDig] = digitos[12 + nrDig] == 0;
+
+                    else
+                        cnpjOk[nrDig] = digitos[12 + nrDig] == 11 - resultado[nrDig];
+
+                }
+                return cnpjOk[0] && cnpjOk[1];
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Calcula distãncia entre um ponto geográfico e outro
@@ -237,6 +344,21 @@ namespace TRSTrack.Helpers
                 default:
                     return Color.Aqua;
             }
+        }
+
+        public static string OnlyNumbers(string valor)
+        {
+            return string.IsNullOrEmpty(valor) ? valor : string.Join("", Regex.Split(valor, @"[^\d]"));
+        }
+
+        /// <summary>
+        /// Valida se CPF ou CNPJ informados são válidos
+        /// </summary>
+        /// <param name="valor"></param>
+        /// <returns></returns>
+        public static bool ValidaCpfCnpj(string valor)
+        {
+            return OnlyNumbers(valor).Length <= 11 ? ValidaCpf(valor) : ValidaCnpj(valor);
         }
     }
 }

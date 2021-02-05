@@ -287,8 +287,6 @@ namespace TRSTrack.Controllers
         {
             try
             {
-                SetBusyStatus(true);
-
                 ImageSaveCircuit = GetImageSource(MyImageEnum.SaveCircuit);
                 ImageColorDialog = GetImageSource(MyImageEnum.ColorDialog);
                 ImageAppIcon = GetImageSource(MyImageEnum.AppIcon);
@@ -313,26 +311,11 @@ namespace TRSTrack.Controllers
                     IsUnlocked = so.IsUnlocked
                 };
                 CurrentMapType = ScreenOptions.MapType == 0 ? MapType.Street : MapType.Satellite;
-
-                //MainThread.BeginInvokeOnMainThread(() => 
-                //{
-                //    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //    {
-                //        CircuitCount = ds.CircuitosCount();
-                //        RaceCount = ds.ReceCount();
-                //        return true;
-                //    });
-                //});
-
                 ResetParameters();
             }
             catch (Exception exception)
             {
                 MessageService.Show("Erro", exception.Message);
-            }
-            finally
-            {
-                SetBusyStatus(false);
             }
         }
 
@@ -578,10 +561,6 @@ namespace TRSTrack.Controllers
             {
                 MessageService.Show("Erro", exception.Message);
             }
-            finally
-            {
-                SetBusyStatus(false);
-            }
         }
 
         private void IncreaseMapZoom()
@@ -616,10 +595,6 @@ namespace TRSTrack.Controllers
             catch (Exception exception)
             {
                 MessageService.Show("Erro", exception.Message);
-            }
-            finally
-            {
-                SetBusyStatus(false);
             }
         }
 
@@ -667,7 +642,7 @@ namespace TRSTrack.Controllers
                 //var ask = await MessageService.ShowDialogAsync("Confirma criação do Circuito?", $"{NomeCircuito} irá conter {PercursoCount} steps e {WayPointCount} waypoints.");
                 //if (!ask) return;
 
-                SetBusyStatus(true, "Aguarde...");
+                await SetBusyStatus(true, "Aguarde...");
 
                 var circuito = new Circuito
                 {
@@ -727,7 +702,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 

@@ -66,7 +66,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
     }

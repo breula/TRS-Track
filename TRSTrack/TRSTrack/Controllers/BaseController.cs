@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using TRSTrack.Custom;
 using TRSTrack.Helpers;
 using TRSTrack.Interfaces;
@@ -554,10 +555,11 @@ namespace TRSTrack.Controllers
         /// </summary>
         /// <param name="isBusy">If busie or not</param>
         /// <param name="message">Busie message if desire</param>
-        public void SetBusyStatus(bool isBusy, string message = null)
+        public async Task SetBusyStatus(bool isBusy, string message = null)
         {
             IsBusy = isBusy;
             BusieMessage = message;
+            await Task.Delay(100);
         }
 
         /// <summary>

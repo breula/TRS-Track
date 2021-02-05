@@ -98,7 +98,7 @@ namespace TRSTrack.Controllers
                 var result = await FilePicker.PickAsync();
                 if (result == null)
                 {
-                    await MessageService.ShowAsync("Arquivo nulo", "nenhum arquivo conhecido foi encontrado.");
+                    await MessageService.ShowAsync("Arquivo nulo", "Nenhum arquivo conhecido foi encontrado.");
                     return;
                 }
 
@@ -119,7 +119,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -148,7 +148,7 @@ namespace TRSTrack.Controllers
                     CircuitoLido.Nome = $"{CircuitoLido.Nome} {existentes + 1}";
                 }
 
-                SetBusyStatus(true, "Importando...");
+                await SetBusyStatus(true, "Importando...");
 
                 var dtfs = new DateTimeOffset();
                 DateTimeOffset.TryParse($"{CircuitoLido.Data:dd/MM/yyyy HH:mm:ss}", null, DateTimeStyles.AssumeUniversal, out dtfs);
@@ -192,7 +192,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
     }

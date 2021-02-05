@@ -15,6 +15,7 @@ namespace TRSTrack.Models
         public int Circuito { get; set; }
         public string Nome { get; set; }
         public string DisplayName { get; set; }
+        public string Cpf { get; set; }
         public DateTimeOffset Data { get; set; }
     }
 }

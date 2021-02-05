@@ -1,6 +1,11 @@
-﻿using Rg.Plugins.Popup.Extensions;
+﻿using Acr.UserDialogs;
+using Newtonsoft.Json;
+using Rg.Plugins.Popup.Extensions;
+using Rg.Plugins.Popup.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TRSTrack.Custom;
@@ -47,7 +52,8 @@ namespace TRSTrack.Controllers
             {
                 _corridaEscolhida = value;
                 OnPropertyChanged(nameof(CorridaEscolhida));
-                LoadLaps();
+                if (CorridaEscolhida != null)
+                    LoadLaps();
             }
         }
 
@@ -152,13 +158,23 @@ namespace TRSTrack.Controllers
         {
             get { return new Command<RaceLapDataShow>(async obj => { await IsolateLap(obj); }); }
         }
+
+        public Command ShareRaceCommand
+        {
+            get { return new Command<RaceLapDataShow>(async obj => { await ShareRace(); }); }
+        }
+
+        public Command DeleteRaceCommand
+        {
+            get { return new Command<RaceLapDataShow>(async obj => { await DeleteRace(); }); }
+        }
         #endregion
 
         public PopupRaceListPageController(Race currentRace)
         {
             try
             {
-                SetBusyStatus(true);
+                UserDialogs.Instance.HideLoading();
                 ImageSaveCircuit = GetImageSource(MyImageEnum.RaceList);
                 MapZoom = 50;
                 LatitudeInicial = 0;
@@ -173,10 +189,6 @@ namespace TRSTrack.Controllers
             catch (Exception exception)
             {
                 MessageService.Show("Erro", $"{exception.Message}");
-            }
-            finally
-            {
-                SetBusyStatus(false);
             }
         }
 
@@ -206,7 +218,7 @@ namespace TRSTrack.Controllers
         {
             try
             {
-                SetBusyStatus(true);
+                await SetBusyStatus(true);
                 var ds = new DataStore();
                 var circuito = ds.CircuitoGet(CorridaEscolhida.Circuito);
                 RaceDataShow = new RaceDataShow
@@ -271,7 +283,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -357,7 +369,116 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
+            }
+        }
+
+        private async Task ShareRace()
+        {
+            try
+            {
+                var ds = new DataStore();
+
+                var race = ds.GetReces(CorridaEscolhida);
+                var raceName = string.IsNullOrEmpty(race[0].Nome) ? $"Export {race[0].Id}" : race[0].Nome;
+                //Construir arquivo
+                var shareFile = new RaceShare
+                {
+                    Nome = raceName,
+                    DisplayName = race[0].DisplayName,
+                    Cpf = race[0].Cpf,
+                    Data = race[0].Data
+                };
+
+                var laps = ds.GetLaps(CorridaEscolhida);
+                foreach (var lap in laps)
+                {
+                    shareFile.RaceShareLapList.Add(new RaceShareLap
+                    {
+                        LapNumber = lap.LapNumber,
+                        TempoTotal = lap.TempoTotal,
+                        VelocidadeMedia = lap.VelocidadeMedia
+                    });
+
+                    var partials = ds.GetLapPartials(lap);
+                    foreach (var partial in partials)
+                    {
+                        shareFile.RaceShareLapPartialList.Add(new RaceShareLapPartial
+                        {
+                            NumeroPassagem = partial.NumeroPassagem,
+                            VelocidadePassagem = partial.NumeroPassagem,
+                            TempoPassagem = partial.TempoPassagem,
+                            DescricaoPassagem = partial.DescricaoPassagem
+                        });
+                    };
+
+                    var tracks = ds.GetLapTrack(race[0], lap);
+                    foreach (var track in tracks)
+                    {
+                        shareFile.RaceShareLapTrackList.Add(new RaceShareLapTrack
+                        {
+                            LapNumber = track.LapNumber,
+                            Latitude = track.Latitude,
+                            Longitude = track.Longitude
+                        });
+                    }
+                }
+
+                var json = JsonConvert.SerializeObject(shareFile);
+                var fn = $"{raceName}.rce";
+                var file = Path.Combine(FileSystem.CacheDirectory, fn);
+                File.WriteAllText(file, json);
+
+                await Share.RequestAsync(new ShareFileRequest
+                {
+                    Title = raceName,
+                    File = new ShareFile(file)
+                });
+            }
+            catch (Exception exception)
+            {
+                await MessageService.ShowAsync("Erro", exception.Message);
+            }
+            finally
+            {
+                await SetBusyStatus(false);
+            }
+        }
+
+        private async Task DeleteRace()
+        {
+            try
+            {
+                Tools.Vibrate(new List<KeyValuePair<int, int>>
+                {
+                    new KeyValuePair<int, int>(30,50),
+                    new KeyValuePair<int, int>(20,100)
+                });
+
+                var ask = await MessageService.ShowDialogAsync("Confirma exclusão?", "Excluir esta corrida!");
+                if (!ask) return;
+
+                await SetBusyStatus(true);
+
+                var ds = new DataStore();
+                ds.ExcluirCorrida(CorridaEscolhida);
+                Corridas = ds.GetReces();
+                if (Corridas.Count > 0)
+                {
+                    CorridaEscolhida = Corridas[0];
+                    LoadLaps();
+                    return;
+                }
+                await MessageService.ShowAsync("Sem corridas", "Não existem corridas para listar");
+                await PopupNavigation.Instance.PopAsync();
+            }
+            catch (Exception exception)
+            {
+                await MessageService.ShowAsync("Erro", exception.Message);
+            }
+            finally
+            {
+                await SetBusyStatus(false);
             }
         }
     }

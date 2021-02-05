@@ -184,7 +184,6 @@
         <xForms:SfBusyIndicator 
             x:Name="Busyindicator"
             IsBusy="{Binding IsBusy}"
-            Title="{Binding BusieMessage}"
             Style="{StaticResource BusieIndicator}">
         </xForms:SfBusyIndicator>
     </Grid>

@@ -78,6 +78,11 @@ namespace TRSTrack.Controllers
         {
             get { return new Command(async obj => { await ExcluirTodosCircuitos(); }); }
         }
+
+        public Command ImportRaceCommand
+        {
+            get { return new Command<Circuito>(async obj => { await ImportRace(obj); }); }
+        }
         #endregion
 
         public PopupCircuitPageController()
@@ -107,7 +112,7 @@ namespace TRSTrack.Controllers
                 var ask = await MessageService.ShowDialogAsync("Confirma exclusão?", "Todos os circuitos salvos serão excluídos!");
                 if (!ask) return;
 
-                SetBusyStatus(true);
+                await SetBusyStatus(true);
 
                 var ds = new DataStore();
                 ds.ExcluirTodosCircuitos();
@@ -122,7 +127,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -146,7 +151,7 @@ namespace TRSTrack.Controllers
                     if (!ask) return;
                 }
 
-                SetBusyStatus(true);
+                await SetBusyStatus(true);
 
                 ds.ExcluirCircuito(new Circuito { Id = circuito.Id });
                 Circuitos = ds.CircuitoGetList();
@@ -159,7 +164,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -175,7 +180,7 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
             }
         }
 
@@ -227,7 +232,85 @@ namespace TRSTrack.Controllers
             }
             finally
             {
-                SetBusyStatus(false);
+                await SetBusyStatus(false);
+            }
+        }
+
+        public async Task ImportRace(Circuito circuito)
+        {
+            try
+            {
+                var result = await FilePicker.PickAsync();
+                if (result == null)
+                {
+                    await MessageService.ShowAsync("Arquivo nulo", "Nenhum arquivo conhecido foi encontrado.");
+                    return;
+                }
+
+                if (!result.FileName.EndsWith("rce", StringComparison.OrdinalIgnoreCase))
+                {
+                    await MessageService.ShowAsync("Arquivo inválido", "Um arquivo de corrida válido deve ter extesão do tipo .rce!");
+                    return;
+                }
+
+                await SetBusyStatus(true, "Importando...");
+
+                var stream = await result.OpenReadAsync();
+                StreamReader reader = new StreamReader(stream);
+                string json = reader.ReadToEnd();
+
+                var raceShare = JsonConvert.DeserializeObject<RaceShare>(json);
+
+                var ds = new DataStore();
+
+                //var dtfs = new DateTimeOffset();
+                //DateTimeOffset.TryParse($"{CircuitoLido.Data:dd/MM/yyyy HH:mm:ss}", null, DateTimeStyles.AssumeUniversal, out dtfs);
+
+                //var race = new Race
+                //{
+                //    Id = 0,
+                //    Nome = raceShare.Nome,
+                //    Circuito = circuito.Id,
+                //    DisplayName = raceShare.DisplayName,
+                //};
+                //race = ds.SalvarCorrida(race);
+
+                //foreach (var lap in raceShare.RaceShareLapList)
+                //{
+                //    ds.salvar
+                //}
+
+                //var coutWaypoints = 0;
+                //var stepsCount = 0;
+                //foreach (var wpi in CircuitoLido.WayPoints)
+                //{
+                //    var wayPoint = new WayPoint
+                //    {
+                //        Id = 0,
+                //        Circuito = circuito.Id,
+                //        Nome = wpi.Nome,
+                //        Cor = wpi.Cor,
+                //        Latitude = wpi.Latitude,
+                //        Longitude = wpi.Longitude,
+                //        Chegada = wpi.Chegada,
+                //        Largada = wpi.Largada,
+                //        Distancia = wpi.Distancia,
+                //        IsWayPoint = wpi.IsWayPont
+                //    };
+                //    ds.SalvarWayPoint(wayPoint);
+                //    if (wpi.IsWayPont) coutWaypoints++; else stepsCount++;
+                //}
+                //CircuitoLido = null;
+                //CircuitCount = ds.CircuitosCount();
+               // await MessageService.ShowAsync("Sucesso!", $"Circuito {circuito.Nome} importado com {coutWaypoints} waypoints e {stepsCount} steps!");
+            }
+            catch (Exception exception)
+            {
+                await MessageService.ShowAsync("Erro", exception.Message);
+            }
+            finally
+            {
+                await SetBusyStatus(false);
             }
         }
     }
