@@ -1,9 +1,11 @@
 ﻿using Acr.UserDialogs;
 using Plugin.Geolocator;
 using Rg.Plugins.Popup.Extensions;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using TRSTrack.Custom;
 using TRSTrack.Helpers;
@@ -19,6 +21,8 @@ namespace TRSTrack.Controllers
     public class RunningModePageController : BaseController
     {
         #region-- Properties --
+        private CancellationTokenSource _cts;
+
         private CustomMap _currentMapView;
         public CustomMap CurrentMapView
         {
@@ -152,6 +156,29 @@ namespace TRSTrack.Controllers
                 OnPropertyChanged(nameof(RaceAdjustValue));
             }
         }
+
+        private string _cpf;
+        public string Cpf 
+        {
+            get => _cpf;
+            set
+            {
+                _cpf = value;
+                OnPropertyChanged(nameof(Cpf));
+            }
+        }
+
+        private int _dataListCount;
+        public int DataListCount
+        {
+            get => _dataListCount;
+            set
+            {
+                _dataListCount = value;
+                OnPropertyChanged(nameof(DataListCount));
+            }
+        }
+
         #endregion
 
         #region-- Commands --
@@ -190,6 +217,15 @@ namespace TRSTrack.Controllers
             get { return new Command(obj => { OpenRaceStatistics(); }); }
         }
 
+        public Command ClosePopupCommand
+        {
+            get { return new Command(obj => { ClosePopup(); }); }
+        }
+
+        public Command OpenCpfDialogCommand
+        {
+            get { return new Command(obj => { OpenCpfDialog(); }); }
+        }
         #endregion
 
         public RunningModePageController()
@@ -391,13 +427,18 @@ namespace TRSTrack.Controllers
             ListeningPosition.Reset();
             ListeningPosition.Play();
             LoadWayPoints();
-            EnablaBurnButtom = ListeningPosition.MarkersCount() > 0 && KeepTrakingPosition == false;
+            EnablaBurnButtom = false;
             LapNumber = ListeningPosition.CurrentLapNumber;
             ChangeKeepTrakRule(true);
 
             TimeLapsed.Pause();
             TimeLapsed.Reset();
             TimeLapsed.Play();
+
+            _cts = new CancellationTokenSource();
+            var task = ConsumeTasks(_cts.Token);
+            await task;
+
             Tools.Vibrate(40);
         }
 
@@ -406,7 +447,8 @@ namespace TRSTrack.Controllers
             Tools.Vibrate(40);
             ChangeKeepTrakRule(false);
             ListeningPosition.Stop();
-            EnablaBurnButtom = ListeningPosition.MarkersCount() > 0 && KeepTrakingPosition == false;
+            _cts.Cancel();
+            EnablaBurnButtom = ListeningPosition.MarkersCount() > 0;
         }
 
         private async void ChangeKeepTrakRule(bool keepTrack)
@@ -443,47 +485,41 @@ namespace TRSTrack.Controllers
             ds.SalvarRadialMenuPosition(o);
         }
 
+        private async Task ClosePopup()
+        {
+            await PopupNavigation.Instance.PopAsync();
+        }
+
+        private async Task OpenCpfDialog()
+        {
+            await Application.Current.MainPage.Navigation.PushPopupAsync(new PopupCpfPage(this));
+        }
+
         public async Task OpenRaceStatistics()
         {
             try
             {
-                var Race = new Race();
-                Action OkAction = () =>
+                if (string.IsNullOrEmpty(Cpf))
                 {
-                    return;
-                };
-                
-                PromptResult pResult = await UserDialogs.Instance.PromptAsync(new PromptConfig
-                {
-                    InputType = InputType.Name,
-                    OkText = "Confirmar",
-                    Title = "Informe seu CPF",
-                });
-                if (!pResult.Ok || string.IsNullOrWhiteSpace(pResult.Text))
-                {
-                    var aConfi = new AlertConfig();
-                    aConfi.SetMessage("Necessário informar um CPF para gravar a corrida");
-                    aConfi.SetTitle("CPF obrigatório");
-                    aConfi.SetOkText("Ok");
-                    aConfi.SetAction(OkAction);
-                    UserDialogs.Instance.Alert(aConfi);
+                    await MessageService.ShowAsync("CPF ?", "Informe seu CPF por favor");
                     return;
                 }
 
-                if (!Tools.ValidaCpfCnpj(pResult.Text))
+                if (!Tools.ValidaCpfCnpj(Cpf))
                 {
-                    var aConfi = new AlertConfig();
-                    aConfi.SetMessage("Necessário informar um CPF correto para gravar a corrida");
-                    aConfi.SetTitle("CPF inválido");
-                    aConfi.SetOkText("Ok");
-                    aConfi.SetAction(OkAction);
+                    await MessageService.ShowAsync("CPF inválido", "Informe um CPF válido por favor");
                     return;
                 }
+
+                await PopupNavigation.Instance.PopAsync();
+
+                var Race = new Race();
+               
                 await SetBusyStatus(true, "Aguarde...");
                 //UserDialogs.Instance.Loading("Aguarde...");
                 var laps = ListeningPosition.Laps();
                 var ds = new DataStore();
-                Race = ds.SalvarCorrida(CircuitoEscolhido, laps, pResult.Text);
+                Race = ds.SalvarCorrida(CircuitoEscolhido, laps, Cpf);
                 ListeningPosition.Clear();
                 CurrentMapView.MapElements.Clear();
                 CurrentMapView.Pins.Clear();
@@ -516,6 +552,46 @@ namespace TRSTrack.Controllers
             {
                 MessageService.Show("Erro", exception.Message);
             }
+        }
+
+
+
+
+        private async Task ConsumeTasks(CancellationToken cancel)
+        {
+            foreach (var task in ProduceForever(cancel))
+            {
+                await task;
+            }
+        }
+
+        private IEnumerable<Task> ProduceForever(CancellationToken cancel)
+        {
+            do
+            {
+                yield return DoTheThing();
+            } while (!cancel.IsCancellationRequested);
+        }
+
+        private async Task DoTheThing()
+        {
+            await Task.Delay(2000);
+
+            var postion = await Geolocation.GetLocationAsync();
+            var last = ListeningPosition.Last();
+            if (last == null)
+            {
+                ListeningPosition.Add((int)Math.Ceiling(postion.Speed.Value * 3.6), postion.Latitude, postion.Longitude);
+            }
+            else
+            {
+                if (last.Latitude != postion.Latitude && last.Longitude != postion.Longitude)
+                {
+                    ListeningPosition.Add((int)Math.Ceiling(postion.Speed.Value * 3.6), postion.Latitude, postion.Longitude);
+                }
+            }
+
+            DataListCount = ListeningPosition.DataListCount();
         }
     }
 }

@@ -1207,6 +1207,18 @@
           "buildTransitive/Xamarin.Forms.targets": {}
         }
       },
+      "Xamarin.Forms.BehaviorValidationPack/1.1.1": {
+        "type": "package",
+        "dependencies": {
+          "Xamarin.Forms": "4.0.0.709238"
+        },
+        "compile": {
+          "lib/netstandard2.0/Xamarin.Forms.BehaviorValidationPack.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Xamarin.Forms.BehaviorValidationPack.dll": {}
+        }
+      },
       "Xamarin.Forms.Maps/4.8.0.1451": {
         "type": "package",
         "dependencies": {
@@ -1320,6 +1332,7 @@
           "Xamanimation": "1.3.0",
           "Xamarin.Essentials": "1.6.0",
           "Xamarin.Forms": "4.8.0.1451",
+          "Xamarin.Forms.BehaviorValidationPack": "1.1.1",
           "Xamarin.Forms.Maps": "4.8.0.1451"
         },
         "compile": {
@@ -3377,6 +3390,18 @@
         "lib/uap10.0.16299/Xamarin.Forms.Xaml.xml",
         "xamarin.forms.4.8.0.1451.nupkg.sha512",
         "xamarin.forms.nuspec"
+      ]
+    },
+    "Xamarin.Forms.BehaviorValidationPack/1.1.1": {
+      "sha512": "MpTTek+d3NfkaGJNAU0xj+MjuPMlBAUcNJWKqR3q7oZztJJoMb91AHY7yE3GoBlI4IzSDwhq4qxIaQzMdTCPTA==",
+      "type": "package",
+      "path": "xamarin.forms.behaviorvalidationpack/1.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/Xamarin.Forms.BehaviorValidationPack.dll",
+        "xamarin.forms.behaviorvalidationpack.1.1.1.nupkg.sha512",
+        "xamarin.forms.behaviorvalidationpack.nuspec"
       ]
     },
     "Xamarin.Forms.Maps/4.8.0.1451": {

@@ -25,6 +25,7 @@
           "Xamanimation": "1.3.0",
           "Xamarin.Essentials": "1.6.0",
           "Xamarin.Forms": "4.8.0.1451",
+          "Xamarin.Forms.BehaviorValidationPack": "1.1.1",
           "Xamarin.Forms.Maps": "4.8.0.1451",
           "Mono.Android": "0.0.0.0"
         },
@@ -596,6 +597,17 @@
           }
         }
       },
+      "Xamarin.Forms.BehaviorValidationPack/1.1.1": {
+        "dependencies": {
+          "Xamarin.Forms": "4.8.0.1451"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Xamarin.Forms.BehaviorValidationPack.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
+          }
+        }
+      },
       "Xamarin.Forms.Maps/4.8.0.1451": {
         "dependencies": {
           "Xamarin.Forms": "4.8.0.1451"
@@ -1007,6 +1019,13 @@
       "sha512": "sha512-3RUzBpcaBxOjufLLqJnuZRGLhzAbVyfe/Pyp0AFY/H1MkCHYxXIRzgB8h6yC9NTs39NLK2SgGiaMbvC4TJ/zFA==",
       "path": "xamarin.forms/4.8.0.1451",
       "hashPath": "xamarin.forms.4.8.0.1451.nupkg.sha512"
+    },
+    "Xamarin.Forms.BehaviorValidationPack/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MpTTek+d3NfkaGJNAU0xj+MjuPMlBAUcNJWKqR3q7oZztJJoMb91AHY7yE3GoBlI4IzSDwhq4qxIaQzMdTCPTA==",
+      "path": "xamarin.forms.behaviorvalidationpack/1.1.1",
+      "hashPath": "xamarin.forms.behaviorvalidationpack.1.1.1.nupkg.sha512"
     },
     "Xamarin.Forms.Maps/4.8.0.1451": {
       "type": "package",

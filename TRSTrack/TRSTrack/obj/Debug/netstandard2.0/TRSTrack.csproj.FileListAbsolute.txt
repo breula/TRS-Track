@@ -55,3 +55,4 @@ D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\nets
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\TRSTrack.dll
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\ref\TRSTrack.dll
 D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\TRSTrack.pdb
+D:\Clientes\Workana - Leo Wermelinger\TRS-Track\TRSTrack\TRSTrack\obj\Debug\netstandard2.0\Popups\PopupCpfPage.xaml.g.cs

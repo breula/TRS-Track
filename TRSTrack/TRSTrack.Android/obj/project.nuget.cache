@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "B/WFXlIFw1zfD380PGSMcLDbsXI2olVkSffoKvXWNaIX+xQueKngfMTUj4iI77JGHDGhMtOJG8WQUB1hYgWDlA==",
+  "dgSpecHash": "I64PiTSPfSgbwJM8VABRlVDxoyv2j9084JAulAI23Ptvy7YMGZ2XV17NoaddhD0EIizEmrWfzNX2H+PCVHf/2Q==",
   "success": true,
   "projectFilePath": "D:\\Clientes\\Workana - Leo Wermelinger\\TRS-Track\\TRSTrack\\TRSTrack.Android\\TRSTrack.Android.csproj",
   "expectedPackageFiles": [
@@ -76,6 +76,7 @@
     "C:\\Users\\marci\\.nuget\\packages\\xamarin.build.download\\0.4.11\\xamarin.build.download.0.4.11.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\xamarin.essentials\\1.6.0\\xamarin.essentials.1.6.0.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\xamarin.forms\\4.8.0.1451\\xamarin.forms.4.8.0.1451.nupkg.sha512",
+    "C:\\Users\\marci\\.nuget\\packages\\xamarin.forms.behaviorvalidationpack\\1.1.1\\xamarin.forms.behaviorvalidationpack.1.1.1.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\xamarin.forms.maps\\4.8.0.1451\\xamarin.forms.maps.4.8.0.1451.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\xamarin.googleplayservices.base\\71.1610.0\\xamarin.googleplayservices.base.71.1610.0.nupkg.sha512",
     "C:\\Users\\marci\\.nuget\\packages\\xamarin.googleplayservices.basement\\71.1620.0\\xamarin.googleplayservices.basement.71.1620.0.nupkg.sha512",

@@ -42,7 +42,13 @@
                         HasScrollEnabled="True">
                     </custom1:CustomMap>
                 </StackLayout>
-
+                <Label 
+                    FontSize="20" 
+                    TextColor="Red" 
+                    Text="{Binding DataListCount}" 
+                    AbsoluteLayout.LayoutBounds="1,1,0.1,0.1" 
+                    AbsoluteLayout.LayoutFlags="All">
+                </Label>
                 <Frame 
                     x:Name="OverLayVelocimetro"
                     Padding="7,0"
@@ -108,7 +114,7 @@
                             <Button
                                 Text="&#xef55;"
                                 Style="{StaticResource MenuRecordButtom}"
-                                Command="{Binding OpenRaceStatisticsCommand}"
+                                Command="{Binding OpenCpfDialogCommand}"
                                 IsEnabled="{Binding EnablaBurnButtom}">
                             </Button>
                         </StackLayout>
@@ -144,14 +150,15 @@
 
                 <Frame
                     CornerRadius="10"
-                    AbsoluteLayout.LayoutBounds="0.97,0.3,0.2,0.5" 
+                    Padding="0"
+                    AbsoluteLayout.LayoutBounds="1,0.5,0.15,0.5" 
                     AbsoluteLayout.LayoutFlags="All"
                     IsVisible="True"
                     Style="{StaticResource MapOverlayCard}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="90*"></RowDefinition>
-                            <RowDefinition Height="10*"></RowDefinition>
+                            <RowDefinition Height="80*"></RowDefinition>
+                            <RowDefinition Height="20*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <range:SfRangeSlider 
                             Grid.Row="0"
@@ -178,7 +185,7 @@
                             FontFamily="AwesomeBold"
                             TextColor="{StaticResource Color4}"
                             BackgroundColor="Transparent"
-                            VerticalOptions="FillAndExpand"
+                            VerticalOptions="EndAndExpand"
                             HorizontalOptions="FillAndExpand"
                             Clicked="BtnSalvarRange_Clicked">
                         </Button>

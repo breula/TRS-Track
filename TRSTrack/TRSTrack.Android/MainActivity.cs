@@ -31,18 +31,18 @@ namespace TRSTrack.Droid
             UserDialogs.Init(this);
             LoadApplication(new App());
 
-            MessagingCenter.Unsubscribe<string>(this, "TRSTrackService");
-            MessagingCenter.Subscribe<string>(this, "TRSTrackService", (value) =>
-            {
-                if (value == "1")
-                {
-                    base.StartService(new Intent(this, typeof(BackgroundService)));
-                }
-                else
-                {
-                    base.StopService(new Intent(this, typeof(BackgroundService)));
-                }
-            });
+            //MessagingCenter.Unsubscribe<string>(this, "TRSTrackService");
+            //MessagingCenter.Subscribe<string>(this, "TRSTrackService", (value) =>
+            //{
+            //    if (value == "1")
+            //    {
+            //        base.StartService(new Intent(this, typeof(BackgroundService)));
+            //    }
+            //    else
+            //    {
+            //        base.StopService(new Intent(this, typeof(BackgroundService)));
+            //    }
+            //});
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)

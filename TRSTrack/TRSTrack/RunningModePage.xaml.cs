@@ -19,23 +19,11 @@ namespace TRSTrack
             BindingContext = _controller = new RunningModePageController();
             _controller.CatchControl(this);
             _controller.CatchControl(Map);
-            //MessagingCenter.Unsubscribe<string>(this, "counterValue");
-            //MessagingCenter.Subscribe<string>(this, "counterValue", (value) =>
-            //{
-            //    Device.BeginInvokeOnMainThread(() =>
-            //    {
-            //        ListeningPosition.UpdadeReceData();
-            //    });
-            //});
         }
 
         protected async override void OnAppearing()
         {
             var position = await CrossGeolocator.Current.GetPositionAsync();
-            //foreach (var element in ListeningPosition.Map.MapElements)
-            //{
-            //    Map.MapElements.Add(element);
-            //}
             foreach (var newElement in ListeningPosition.MapListening().MapElements)
             {
                 var jaExiste = false;

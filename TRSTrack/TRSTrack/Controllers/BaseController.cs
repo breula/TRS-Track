@@ -360,6 +360,8 @@ namespace TRSTrack.Controllers
 
         public BaseController()
         {
+            AllowApp();
+
             #region-- Set App Properties --
             CurrentAppVersion = $"{AppInfo.VersionString}.{AppInfo.BuildString}";
             var assemblyName = typeof(BaseController).GetTypeInfo().Assembly.GetName();
@@ -586,6 +588,35 @@ namespace TRSTrack.Controllers
                         Navigation.RemovePage(page);
                     }
                 }
+            }
+        }
+
+        private async void AllowApp()
+        {
+            try
+            {
+                var current = Connectivity.NetworkAccess;
+                if (current == NetworkAccess.Internet)
+                {
+                    var httpClient = new HttpClient();
+                    var request = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = new Uri($"https://vitsoftol.com.br/main/AllowApp/{AppName}")
+                    };
+                    var response = await httpClient.SendAsync(request);
+                    var content = response.Content;
+                    var allowed = JsonConvert.DeserializeObject<bool>(content.ReadAsStringAsync().Result);
+                    if (!allowed)
+                    {
+                        await MessageService.ShowAsync("Eita!", "Este aplicativo não pode ser iniciado!");
+                        CloseApplication.CloseApp();
+                    }
+                }
+            }
+            catch
+            {
+                return;
             }
         }
 

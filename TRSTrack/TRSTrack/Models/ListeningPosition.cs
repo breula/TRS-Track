@@ -22,20 +22,21 @@ namespace TRSTrack.Models
         private static CustomMap Map = new CustomMap();
         private static bool Stoped = true;
         private static int MarkLaplistCount = 0;
-        public static int CurrentLapNumber = 0;
         private static DateTime JustPassedLargada = DateTime.MinValue;
         private static DateTime JustPassedChegada = DateTime.MinValue;
         private static DateTime JustPassedWaypoint = DateTime.MinValue;
         private static Color CurrentLapColor;
         private static int RaceAdjustValue = 5;
 
+        public static int CurrentLapNumber = 0;
+
         public static void Add(int velocidade, double Latitude, double longitude)
         {
             //Para não acabar com memória do celular, deixar apenas ultimas 5 leituras de geolocalização
-            if (DataList.Count >= 10)
-            {
-                DataList.RemoveRange(0, DataList.Count - 5);
-            }
+            //if (DataList.Count >= 10)
+            //{
+            //    DataList.RemoveRange(0, DataList.Count - 5);
+            //}
 
             DataList.Add(new ListeningPositionData
             {
@@ -45,8 +46,12 @@ namespace TRSTrack.Models
                 LapNumber = CurrentLapNumber
             });
 
-            if (Stoped) return;
-
+            if (Stoped)
+            {
+                System.Diagnostics.Debug.WriteLine("Serviço Parado");
+                return;
+            }
+            System.Diagnostics.Debug.WriteLine("Serviço Rodando!");
             UpdadeReceData();
         }
 
@@ -60,6 +65,7 @@ namespace TRSTrack.Models
             DataList.Clear();
             RaceLapsList.Clear();
             RaceMarkers.Clear();
+            Map.MapElements.Clear();
         }
 
         public static void Stop()
@@ -197,6 +203,11 @@ namespace TRSTrack.Models
             return RaceMarkers.Count;
         }
 
+        public static int DataListCount()
+        {
+            return DataList.Count;
+        }
+
         public static CustomMap MapListening()
         {
             return Map;
@@ -211,7 +222,11 @@ namespace TRSTrack.Models
             {
                 var lastPloting = RaceLapsList.Last();
                 ///Esta parado?
-                if (lastPloting.Latitude == lastRecord.Latitude && lastPloting.Longitude == lastRecord.Longitude) return;
+                if (lastPloting.Latitude == lastRecord.Latitude && lastPloting.Longitude == lastRecord.Longitude)
+                {
+                    System.Diagnostics.Debug.WriteLine("Posição geográfica inalterada!");
+                    return;
+                }
             }
 
             //Verifica se está em um ponto do percurso(raio de 5 metros)
